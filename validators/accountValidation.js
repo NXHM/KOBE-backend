@@ -1,6 +1,8 @@
 // Valida el nombre de usuario y la contraseña
-function validateUsername(username ) {
+function validateUsername(req) {
     // test sirve para ver si el patron existe en la cadena de texto
+    // Suggested code may be subject to a license. Learn more: ~LicenseLog:159666383.
+    const username = req.body.username;
     // Validación de nombre de usuario
     if (username.length < 3 || username.length > 20) {
         return "Username must be between 3 and 20 characters.";
@@ -13,7 +15,11 @@ function validateUsername(username ) {
     }
     return "Username is valid.";
 }
-function  validatePassword(password, confirmPassword) {
+function  validatePassword(req) {
+    
+    const password = req.body.password;
+    const confirmPassword = req.body.confirmPassword;
+
     // La contraseña es igual a la confirmación
     if (password !== confirmPassword) {
         return "Passwords do not match. Write the same password in both fields."
@@ -45,6 +51,7 @@ function  validatePassword(password, confirmPassword) {
     return "Password is valid.";
 }
 
+// Ve si el email es uno existente
 function validateEmail(email){
     // Validación de correo electrónico
     // (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email))
@@ -53,3 +60,4 @@ function validateEmail(email){
     }
     return "Email is valid.";
 }
+
