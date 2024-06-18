@@ -1,8 +1,8 @@
 // Configuración de la db
 module.exports = {
-    database: 'kobe-budget-app',// Primero se debe de crear la base de datos
-    username: 'postgres',
-    password: 'nico',
-    host: 'localhost',
-    dialect: 'postgres',
-  };
+  database: process.env.DB_DATABASE || 'kobe-budget-app',
+  username: process.env.DB_USER || 'postgres',
+  password: process.env.DB_PASSWORD || 'postgres',
+  host: process.env.DB_HOST || 'localhost',
+  dialect: 'postgres',
+};

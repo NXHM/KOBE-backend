@@ -19,4 +19,8 @@ db.user = require('./User')(sequelize, Sequelize, DataTypes);
 
 // Associations
 
+<<<<<<< HEAD
 module.exports = db;
+=======
+module.exports = db;
+>>>>>>> 389509bf25c67cf1054e5e4fc281019f12ef38aa
