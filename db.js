@@ -1,15 +1,6 @@
-require('dotenv').config(); // Cargar variables de entorno al inicio
-
+const config = require('./config/db-config');
 const Sequelize = require('sequelize');
 const { Pool } = require('pg');
-
-const config = {
-  database: 'kobe-budget-app',
-  username: 'postgres',
-  password: 'postgres',
-  host: 'localhost',
-  dialect: 'postgres',
-};
 
 // Configuración de la db con Sequelize
 const sequelize = new Sequelize(config.database, config.username, config.password, {
@@ -20,10 +11,10 @@ const sequelize = new Sequelize(config.database, config.username, config.passwor
 // Conexión con pool usando pg
 const connection = new Pool({
   connectionLimit: 10,
-  host: 'localhost',
-  user: 'postgres',
-  password: 'postgres',
-  database: 'kobe-budget-app'
+  host: config.host,
+  user: config.username,
+  password: config.password,
+  database: config.database
 });
 
 const db = {};
@@ -31,6 +22,9 @@ db.Sequelize = Sequelize;
 db.sequelize = sequelize;
 
 // Storing Models
-const Models = {};
+db.user = require('./models/User')(sequelize, Sequelize);
+
+// Associations
+
 
 module.exports = { db, sequelize, connection };

@@ -1,7 +1,3 @@
-<<<<<<< HEAD
-const Router = require("express");
-const multer = require("multer");
-=======
 const express    = require('express');
 const router     = express.Router();
 
@@ -18,4 +14,3 @@ router.post('/ingresarMovimiento', ingresarMovimiento);
 
 
 module.exports = router;
->>>>>>> 389509bf25c67cf1054e5e4fc281019f12ef38aa
