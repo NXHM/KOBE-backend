@@ -1,5 +1,4 @@
 const { DataTypes } = require('sequelize');
-const { sequelize } = require('../db');
 
 module.exports = (sequelize) => {
     // El Id se coloca automaticamente
@@ -27,7 +26,7 @@ module.exports = (sequelize) => {
             allowNull: false
         }
     }, {
-        freezeTableName: true
-
+        freezeTableName: true,
+        timestamps: false,
     });
 }

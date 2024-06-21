@@ -22,7 +22,10 @@ db.Sequelize = Sequelize;
 db.sequelize = sequelize;
 
 // Storing Models
-db.user = require('./models/User')(sequelize, Sequelize);
+db.User = require('./models/User')(sequelize);
+db.Year = require('./models/Year')(sequelize);
+db.Month = require('./models/Month')(sequelize);
+db.Type = require('./models/Type')(sequelize);
 
 // Associations
 
