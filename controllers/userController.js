@@ -68,6 +68,7 @@ const loginUser = async (req, res) => {
 // Envia el email para la recuperación de contraseña
 const sendEmail = async (to) => {
   // Crea un código de verificación
+  // padStart: rellena con ceros a la izquierda hasta que tenga 6 caracteres
   let verificationCode = Math.floor(Math.random() * 1000000).toString().padStart(6, '0');
 
   // Configura el objeto de transporte con los datos del correo
