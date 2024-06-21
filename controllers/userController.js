@@ -111,10 +111,36 @@ const changePassword = async (req, res) => {
       result: result,
     });
   }
-  
 };
+
+// Cambio de correo
+const changeEmail = async(req, res) => {
+  const {userId, newEmail} = req.body
+
+  await User.update(
+    {email: newEmail},
+    {where: {id: userId}}
+  );
+  
+  res.send('Email changed succesfully!');
+};
+
+// Cambio de contraseña
+const changePasswd = async(req, res) => {
+  const {userId, newPassword} = req.body
+
+  await User.update(
+    {password: newPassword},
+    {where: {id: userId}}
+  );
+  
+  res.send('Password changed succesfully!');
+};
+
 module.exports = {
   createUser,
   loginUser,
-  changePassword
+  changePassword,
+  changeEmail,
+  changePasswd
 }
