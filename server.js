@@ -1,15 +1,15 @@
 const express = require('express');
 const app = require('./config/server-config');
-const db = require('./db')
+const { db } = require('./db');
 const router = require('./routes/routes');
 const port = 3000;
 
 // Con force: true se elimina la db y las tablas, se crae toda la base de datos de nuevo
-db.sequelize.sync({ force: false }) 
+db.sequelize.sync({ force: false })  
   .then(() => {
     // Crear tablas si no existen
     console.log('Database & tables created!');
-  });
+});
 
 // Escucha en el puerto 3000
 app.listen(port, () => {
@@ -19,6 +19,5 @@ app.listen(port, () => {
 // Usa las rutas definidas en la carpeta routes
 // y agrega el prefijo /api
 app.use("/api", router);
-
 
 module.exports = app;
