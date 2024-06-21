@@ -23,15 +23,17 @@ db.sequelize = sequelize;
 
 // Storing Models
 db.User = require('./models/User')(sequelize);
-db.Year = require('./models/Year')(sequelize);
 db.Month = require('./models/Month')(sequelize);
 db.Type = require('./models/Type')(sequelize);
 db.Category = require('./models/Category')(sequelize);
-db.Calendar = require('./models/Calendar')(sequelize);
 db.Budget = require('./models/Budget')(sequelize);
 db.Movement = require('./models/Movement')(sequelize);
 
 // Associations
-
+Object.keys(db).forEach(modelName => {
+  if (db[modelName].associate) {
+    db[modelName].associate(db);
+  }
+});
 
 module.exports = { db, sequelize, connection };
