@@ -5,7 +5,7 @@ const router = require('./routes/routes');
 const port = 3000;
 
 // Con force: true se elimina la db y las tablas, se crae toda la base de datos de nuevo
-db.sequelize.sync({ force: true }) 
+db.sequelize.sync({ force: false }) 
   .then(() => {
     // Crear tablas si no existen
     console.log('Database & tables created!');
