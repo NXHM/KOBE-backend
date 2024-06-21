@@ -1,0 +1,9 @@
+#########################################
+POST http://localhost:3000/api/dias
+Content-Type: application/json
+
+{
+    "month_id": 2,
+    "year_id": 4
+}
+#########################################
