@@ -1,7 +1,7 @@
-const db = require("../models");
+const { password } = require("../config/db-config");
+const {db} = require("../db");
 const accountValidation  = require("../validators/accountValidation")
-const User = db.user; // Traigo al modelo del usuario
-const Op = db.Op;
+const User = db.User; // Traigo al modelo del usuario
 
 // Crear usuario
 exports.create = async(req, res) => {
@@ -27,4 +27,33 @@ exports.create = async(req, res) => {
         });
     }
     res.status(422).json({ errors: errors.array() });
+};
+
+// Cambio de correo
+const changeEmail = async(req, res) => {
+  const {userId, newEmail} = req.body
+
+  await User.update(
+    {email: newEmail},
+    {where: {id: userId}}
+  );
+  
+  res.send('Email changed succesfully!');
+};
+
+// Cambio de contraseña
+const changePasswd = async(req, res) => {
+  const {userId, newPassword} = req.body
+
+  await User.update(
+    {password: newPassword},
+    {where: {id: userId}}
+  );
+  
+  res.send('Password changed succesfully!');
+};
+
+module.exports = {
+  changeEmail,
+  changePasswd
 };

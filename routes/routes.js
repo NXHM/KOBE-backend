@@ -5,7 +5,12 @@ const router     = express.Router();
 const { getTipo  } = require('../controllers/Tipo');
 const { getCategoria  } = require('../controllers/Categoria');
 const { ingresarMovimiento  } = require('../controllers/Movimiento');
+const { changeEmail, changePasswd } = require('../controllers/userController');
+
 //-----------Definir rutas-----------
+// User
+router.post('/changePasswd', changePasswd);
+router.post('/changeEmail', changeEmail);
 
 //Tipo
 router.get('/tipo', getTipo);
