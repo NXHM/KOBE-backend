@@ -16,12 +16,10 @@ const { getPresupuesto, getPresupuestoPorCategoria, getPresupuestoPorTipo } = re
 router.get('/tipo', getTipo);
 router.get('/categoria', getCategoria);
 router.post('/ingresarMovimiento', ingresarMovimiento);
-<<<<<<< HEAD
 router.post('/createUser', createUser);
 router.post('/loginUser', loginUser);
-=======
 router.get('/movimiento/:usuario_id', getMovimiento);
->>>>>>> 2b53c4462df3e39dd72fe7313e1373e8bc9aeca7
+
 
 /* Presupuestos */
 router.post('/presupuestos', getPresupuesto);
