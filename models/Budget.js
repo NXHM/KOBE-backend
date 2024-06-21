@@ -1,50 +1,36 @@
 const { DataTypes } = require('sequelize');
 
-module.exports = (sequelize) => {
-    const Budget = sequelize.define("Budget",{
+module.exports = (sequelize, DataTypes) => {
+    const Budget = sequelize.define('Budget', {
         id: {
-            type: DataTypes.INTEGER,
-            primaryKey: true,
+            allowNull: false,
             autoIncrement: true,
+            primaryKey: true,
+            type: DataTypes.INTEGER,
         },
-        amount:{
+        amount: {
             type: DataTypes.FLOAT,
             allowNull: false
         },
-        category_id: { // Campo de clave externa
+        category_id: {
             type: DataTypes.INTEGER,
             allowNull: false,
             references: {
-                model: 'Category', // Nombre del modelo al que hace referencia
-                key: 'id', // Nombre del campo de clave primaria en el modelo
-            },
+                model: 'Category',
+                key: 'id'
+            }
         },
-        user_id: { // Campo de clave externa
+        month_id: {
             type: DataTypes.INTEGER,
             allowNull: false,
             references: {
-                model: 'User', // Nombre del modelo al que hace referencia
-                key: 'id', // Nombre del campo de clave primaria en el modelo
-            },
-        },
-        month_id: { // Campo de clave externa
-            type: DataTypes.INTEGER,
-            allowNull: false,
-            references: {
-                model: 'Month', // Nombre del modelo al que hace referencia
-                key: 'id', // Nombre del campo de clave primaria en el modelo
-            },
-        },
-        year_id: { // Campo de clave externa
-            type: DataTypes.INTEGER,
-            allowNull: false,
-            references: {
-                model: 'Year', // Nombre del modelo al que hace referencia
-                key: 'id', // Nombre del campo de clave primaria en el modelo
-            },
-        },
-    },{
-        freezeTableName: true,
-        timestamps: false,
+                model: 'Month',
+                key: 'id'
+            }
+        }
+    }, {
+        freezeTableName: true
     });
+
+    return Budget;
 };
