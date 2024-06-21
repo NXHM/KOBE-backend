@@ -46,16 +46,16 @@ const ingresarMovimiento = async (req, res) => {
 
 const editarMovimiento = async (req, res) => {
   const { id } = req.params;
-  const { fecha, tipo_id, categoria_id, monto, comentario } = req.body;
+  const { date, category_id, amount, detail } = req.body;
 
   const query = `
-    UPDATE movimiento
-    SET fecha = $1, tipo_id = $2, categoria_id = $3, monto = $4, comentario = $5
-    WHERE id = $6
+    UPDATE public."Movement"
+    SET date = $1, category_id = $2, amount = $3, detail = $4
+    WHERE id = $5
     RETURNING *;
   `;
 
-  const values = [fecha, tipo_id, categoria_id, monto, comentario, id];
+  const values = [date, category_id, amount, detail, id];
 
   try {
     const { rows } = await connection.query(query, values);
@@ -74,7 +74,7 @@ const eliminarMovimiento = async (req, res) => {
   const { id } = req.params;
 
   const query = `
-    DELETE FROM movimiento
+    DELETE FROM public."Movement"
     WHERE id = $1
     RETURNING *;
   `;
