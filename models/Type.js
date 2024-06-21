@@ -19,9 +19,11 @@ module.exports = (sequelize) => {
         }
     );
 
-    Type.associate = function(models) {
-        Type.hasMany(models.Category), {
-            foreignKey: "type_id"
-        };
+    Type.associate = (models) => {
+        Type.hasMany(models.Category, {
+            foreignKey: 'type_id', // Nombre del campo de clave externa en Category
+        });
     };
+
+    return Type;
 };

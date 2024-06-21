@@ -20,4 +20,15 @@ const { DataTypes } = require('sequelize');
         freezeTableName: true,
         timestamps: false,
     })
+
+    Month.associate = (models) => {
+        Month.hasMany(models.Calendar, {
+            foreignKey: 'month_id', // Nombre del campo de clave externa en Calendar
+        });
+        Month.hasMany(models.Budget, {
+            foreignKey: 'month_id', // Nombre del campo de clave externa en Budget
+        });
+    };
+
+    return Month;
 }

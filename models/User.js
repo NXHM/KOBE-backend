@@ -29,4 +29,15 @@ module.exports = (sequelize) => {
         freezeTableName: true,
         timestamps: false,
     });
+
+    User.associate = (models) => {
+        User.hasMany(models.Budget, {
+            foreignKey: 'user_id', // Nombre del campo de clave externa en Budget
+        });
+        User.hasMany(models.Movement, {
+            foreignKey: 'user_id', // Nombre del campo de clave externa en Movement
+        });
+    };
+
+    return User;
 }
