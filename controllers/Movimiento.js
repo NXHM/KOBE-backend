@@ -24,12 +24,11 @@ const ingresarMovimiento = async (req, res) => {
     const { usuario_id } = req.params;  // Suponiendo que el usuario_id se pasa como parámetro en la URL
 
     const query = `
-        SELECT c.date AS fecha, t.name AS tipo, cat.name AS categoria, tr.detail AS comentario, tr.amount AS monto 
-        FROM Tracker tr 
-        JOIN Calendar c ON tr.date_id = c.id 
-        JOIN Type t ON tr.type_id = t.id 
-        JOIN Category cat ON tr.category_id = cat.id 
-        WHERE tr.user_id = $1;
+        SELECT m.date AS fecha, t.name AS tipo, cat.name AS categoria, m.detail AS comentario, m.amount AS monto 
+        FROM public."Movement" m 
+        INNER JOIN public."Category" cat ON m.category_id = cat.id 
+        INNER JOIN public."Type" t ON cat.type_id = t.id
+        WHERE m.user_id = $1;;
     `;
 
     const values = [usuario_id];
