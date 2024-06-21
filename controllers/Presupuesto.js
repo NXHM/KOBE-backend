@@ -10,14 +10,8 @@ const getPresupuesto = async (req, res) => {
     try {
         let budgets = await Budget.findAll({
             where: {
-                user_id: {
-                    [Op.eq]: user_id
-                },
                 month_id: {
                     [Op.eq]: month_id
-                },
-                year_id: {
-                    [Op.eq]: year_id
                 },
             }
         })
@@ -43,14 +37,8 @@ const getPresupuestoPorCategoria = async (req, res) => {
                 'amount'
             ],
             where: {
-                user_id: {
-                    [Op.eq]: user_id
-                },
                 month_id: {
                     [Op.eq]: month_id
-                },
-                year_id: {
-                    [Op.eq]: year_id
                 },
             },
         })
@@ -71,17 +59,10 @@ const getPresupuestoPorTipo = async (req, res) => {
 
     try {
         let categories = await Category.findAll();
-        let types = await Type.findAll();
         let budgets = await Budget.findAll({
             where: {
-                user_id: {
-                    [Op.eq]: user_id
-                },
                 month_id: {
                     [Op.eq]: month_id
-                },
-                year_id: {
-                    [Op.eq]: year_id
                 },
             },
         })
