@@ -1,4 +1,4 @@
-const { connection } = require('../db');
+const { connection } = require('../models/db');
 
 const ingresarMovimiento = async (req, res) => {
     const { fecha, tipo_id, categoria_id, monto, comentario, usuario_id } = req.body;

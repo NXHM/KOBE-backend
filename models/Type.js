@@ -1,11 +1,14 @@
-const { DataTypes } = require('sequelize');
+const { DataTypes } = require("sequelize");
 
-module.exports = (sequelize) => {
-    const Type = sequelize.define("Type", {
+module.exports = (sequelize, Sequelize) => {
+    const Type = sequelize.define(
+        "Type",
+        {
             id: {
-                type: DataTypes.INTEGER,
-                primaryKey: true,
+                allowNull: false,
                 autoIncrement: true,
+                primaryKey: true,
+                type: DataTypes.INTEGER,
             },
             name: {
                 type: DataTypes.STRING,
@@ -16,14 +19,9 @@ module.exports = (sequelize) => {
         {
             freezeTableName: true,
             timestamps: false,
+            underscored: true,
         }
     );
-
-    Type.associate = (models) => {
-        Type.hasMany(models.Category, {
-            foreignKey: 'type_id', // Nombre del campo de clave externa en Category
-        });
-    };
 
     return Type;
 };

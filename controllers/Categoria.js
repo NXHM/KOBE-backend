@@ -1,4 +1,4 @@
-const { connection } = require('../db');
+const { connection } = require('../models/db');
 
 const getCategoria = async (req, res) => {
     try {

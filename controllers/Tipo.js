@@ -1,4 +1,4 @@
-const { connection } = require('../db');
+const { connection } = require('../models/db');
 
 const getTipo = async (req, res) => {
     try {

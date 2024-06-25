@@ -11,26 +11,11 @@ module.exports = (sequelize) => {
     amount: {
       type: DataTypes.FLOAT,
       allowNull: false
-    },
-    category_id: {
-      type: DataTypes.INTEGER,
-      allowNull: false,
-      references: {
-        model: 'Category',
-        key: 'id'
-      }
-    },
-    month_id: {
-      type: DataTypes.INTEGER,
-      allowNull: false,
-      references: {
-        model: 'Month',
-        key: 'id'
-      }
     }
   }, {
     freezeTableName: true,
-    timestamps: false
+    timestamps: false,
+    underscored: true,
   });
 
   return Budget;

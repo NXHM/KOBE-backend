@@ -1,6 +1,6 @@
 const { DataTypes } = require('sequelize');
 
-module.exports = (sequelize) => {
+module.exports = (sequelize, Sequelize) => {
     // El Id se coloca automaticamente
     const User = sequelize.define('User', {
         id: {
@@ -28,16 +28,8 @@ module.exports = (sequelize) => {
     }, {
         freezeTableName: true,
         timestamps: false,
+        underscored: true,
     });
-
-    User.associate = (models) => {
-        User.hasMany(models.Budget, {
-            foreignKey: 'user_id', // Nombre del campo de clave externa en Budget
-        });
-        User.hasMany(models.Movement, {
-            foreignKey: 'user_id', // Nombre del campo de clave externa en Movement
-        });
-    };
 
     return User;
 }
