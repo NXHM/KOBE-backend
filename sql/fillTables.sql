@@ -15,8 +15,8 @@ INSERT INTO "Month" (name) VALUES
 
 -- Insertar datos en la tabla Type
 INSERT INTO "Type" (name) VALUES
-('Gasto'),
 ('Ingreso'),
+('Gasto'),
 ('Ahorro');
 
 -- Insertar datos en la tabla Category
@@ -33,13 +33,14 @@ INSERT INTO "User" (name, username, email, password) VALUES
 ('Jane Smith', 'janesmith', 'jane@example.com', 'password456');
 
 -- Insertar datos en la tabla Budget
-INSERT INTO "Budget" (amount, category_id, month_id) VALUES
-(1000, (SELECT id FROM "Category" WHERE name = 'Sueldo'), (SELECT id FROM "Month" WHERE name = 'January')),
-(200, (SELECT id FROM "Category" WHERE name = 'Comida'), (SELECT id FROM "Month" WHERE name = 'January')),
-(150, (SELECT id FROM "Category" WHERE name = 'Transporte'), (SELECT id FROM "Month" WHERE name = 'January'));
+INSERT INTO "Budget" (amount, user_id, category_id, month_id) VALUES
+(1000, (SELECT id FROM "User" WHERE username = 'johndoe'), (SELECT id FROM "Category" WHERE name = 'Sueldo'), (SELECT id FROM "Month" WHERE name = 'January')),
+(200, (SELECT id FROM "User" WHERE username = 'johndoe'), (SELECT id FROM "Category" WHERE name = 'Comida'), (SELECT id FROM "Month" WHERE name = 'January')),
+(150, (SELECT id FROM "User" WHERE username = 'johndoe'), (SELECT id FROM "Category" WHERE name = 'Transporte'), (SELECT id FROM "Month" WHERE name = 'January'));
 
 -- Insertar datos en la tabla Movement
 INSERT INTO "Movement" (amount, detail, date, user_id, category_id) VALUES
 (1000, 'Monthly salary', '2024-01-01', (SELECT id FROM "User" WHERE username = 'johndoe'), (SELECT id FROM "Category" WHERE name = 'Sueldo')),
 (-150, 'Weekly groceries', '2024-01-02', (SELECT id FROM "User" WHERE username = 'johndoe'), (SELECT id FROM "Category" WHERE name = 'Comida')),
-(-50, 'Bus fare', '2024-01-03', (SELECT id FROM "User" WHERE username = 'johndoe'), (SELECT id FROM "Category" WHERE name = 'Transporte'));
+(-50, 'Bus fare', '2024-01-03', (SELECT id FROM "User" WHERE username = 'johndoe'), (SELECT id FROM "Category" WHERE name = 'Transporte')),
+(-50, 'Bus fare', '2024-02-03', (SELECT id FROM "User" WHERE username = 'johndoe'), (SELECT id FROM "Category" WHERE name = 'Transporte'));

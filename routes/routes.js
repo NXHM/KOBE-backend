@@ -4,12 +4,12 @@ const router     = express.Router();
 //Importar consultas
 const { getTipo  } = require('../controllers/Tipo');
 const { getCategoria  } = require('../controllers/Categoria');
-const { ingresarMovimiento  } = require('../controllers/Movimiento');
+const { ingresarMovimiento, getMovimientos, getMontoPorCategoriaMovimiento, getMontoPorTipoMovimiento  } = require('../controllers/Movimiento');
 const { createUser, loginUser } = require('../controllers/userController');
 const { changeEmail, changePasswd } = require('../controllers/userController');
-const { getMovimiento } = require('../controllers/Movimiento');
 const { editarMovimiento, eliminarMovimiento } = require('../controllers/Movimiento');
 const { getPresupuesto, getPresupuestoPorCategoria, getPresupuestoPorTipo } = require('../controllers/Presupuesto');
+
 //-----------Definir rutas-----------
 // User
 router.post('/createUser', createUser);
@@ -20,8 +20,12 @@ router.post('/changeEmail', changeEmail);
 //Tipo
 router.get('/tipo', getTipo);
 router.get('/categoria', getCategoria);
+
+//Movimientos
 router.post('/ingresarMovimiento', ingresarMovimiento);
-router.get('/movimiento/:usuario_id', getMovimiento);
+router.post('/movimientos', getMovimientos);
+router.post('/movimientos/sumaCategorias', getMontoPorCategoriaMovimiento);
+router.post('/movimientos/sumaTipo', getMontoPorTipoMovimiento);
 
 //Historial
 router.put('/editmovimiento/:id', editarMovimiento);

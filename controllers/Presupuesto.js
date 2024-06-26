@@ -1,19 +1,31 @@
-const { sequelize } = require('../models/db');
-const { Op, Sequelize } = require('sequelize');
-const Budget = require('../models/Budget')(sequelize);
-const Category = require('../models/Category')(sequelize);
-const Type = require('../models/Type')(sequelize);
+const db = require('../models/db');
+
+const Sequelize = db.Sequelize;
+const Op = db.Op; 
+const Budget = db.Budget;
+const Category = db.Category;
+const Type = db.Type;
 
 const getPresupuesto = async (req, res) => {
-    const { month_id, user_id, year_id } = req.body;
+    const { month_id, user_id} = req.body;
 
     try {
         let budgets = await Budget.findAll({
             where: {
                 month_id: {
-                    [Op.eq]: month_id
+                    [Op.eq]: month_id,
                 },
-            }
+                user_id: {
+                    [Op.eq]: user_id,
+                },
+            },
+            include: [
+                {model: Category,
+                    attributes: [
+                        'name'
+                    ],
+                }
+            ],
         })
 
         if(budgets) {
@@ -28,19 +40,28 @@ const getPresupuesto = async (req, res) => {
 }
 
 const getPresupuestoPorCategoria = async (req, res) => {
-    const { user_id, month_id, year_id } = req.body;
+    const { user_id, month_id} = req.body;
 
     try {
         let budgets = await Budget.findAll({
             attributes: [
                 'category_id',
+                [Sequelize.col('Category.name'), 'category_name'],
                 'amount'
             ],
             where: {
+                user_id: {
+                    [Op.eq]: user_id
+                },
                 month_id: {
                     [Op.eq]: month_id
                 },
             },
+            include: [
+                {model: Category,
+                    attributes: [],
+                }
+            ],
         })
 
         if(budgets) {
@@ -58,25 +79,33 @@ const getPresupuestoPorTipo = async (req, res) => {
     const { user_id, month_id, year_id } = req.body;
 
     try {
-        let categories = await Category.findAll();
         let budgets = await Budget.findAll({
+            attributes: [
+                [Sequelize.col('Category.type_id'), 'type_id'],
+                [Sequelize.col('Category.Type.name'), 'type_name'],
+                [Sequelize.fn('SUM', Sequelize.col('amount')), 'total_amount']
+            ],
             where: {
+                user_id: {
+                    [Op.eq]: user_id
+                },
                 month_id: {
                     [Op.eq]: month_id
                 },
             },
+            include: [
+                {model: Category,
+                    attributes: [],
+                    include: [{model: Type,
+                        attributes: [],
+                    }],
+                }
+            ],
+            group: ['Category.type_id', 'Category.Type.name'],
         })
 
         if(budgets) {
-            const montoPorTipo = budgets.reduce((acc, monto) => {
-                const tipo = categories[monto.category_id-1].type_id;
-                if (!acc[tipo]) {
-                    acc[tipo] = 0;
-                }
-                acc[tipo] += monto.amount;
-                return acc;
-            }, {});
-            res.send({montoPorTipo});
+            res.send(budgets);
         } else {
             res.status(404).json({message: "No existe presupuesto para el mes ingresado."})
         }

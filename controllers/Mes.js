@@ -1,13 +1,11 @@
-const { sequelize } = require('../db');
-const Month = require("../models/Month")(sequelize);
-const Year = require("../models/Year")(sequelize);
+const db = require('../db');
 
 const getDiasXMes = async (req, res) => {
     const {month_id, year_id} = req.body;
 
     try {
-        let month = await Month.findByPk(month_id);
-        let year = await Year.findByPk(year_id);
+        let month = await db.Month.findByPk(month_id);
+        let year = await db.Year.findByPk(year_id);
 
         if (month && year) {
             if (month.id == 2){

@@ -6,6 +6,7 @@ const { Pool } = require('pg');
 const sequelize = new Sequelize(config.database, config.username, config.password, {
   host: config.host,
   dialect: config.dialect,
+  logging: (msg) => console.log(msg),
 });
 
 // Conexión con pool usando pg
@@ -18,12 +19,12 @@ const connection = new Pool({
 });
 
 // Storing Models
-const User = require('./User')(sequelize, Sequelize);
-const Type = require('./Type')(sequelize, Sequelize);
-const Month = require('./Month')(sequelize, Sequelize);
-const Category = require('./Category')(sequelize, Sequelize);
-const Movement = require('./Movement')(sequelize, Sequelize);
-const Budget = require('./Budget')(sequelize, Sequelize);
+const User = require('./User')(sequelize, Sequelize.DataTypes);
+const Type = require('./Type')(sequelize, Sequelize.DataTypes);
+const Month = require('./Month')(sequelize, Sequelize.DataTypes);
+const Category = require('./Category')(sequelize, Sequelize.DataTypes);
+const Movement = require('./Movement')(sequelize, Sequelize.DataTypes);
+const Budget = require('./Budget')(sequelize, Sequelize.DataTypes);
 
 const db = {
   Sequelize,
@@ -38,6 +39,8 @@ const db = {
   Budget,
 };
 
+db.Type.hasMany(db.Category);
+db.Category.belongsTo(db.Type);
 
 db.Category.hasMany(db.Movement);
 db.Movement.belongsTo(db.Category);
@@ -48,8 +51,11 @@ db.Movement.belongsTo(db.User);
 db.User.hasMany(db.Budget);
 db.Budget.belongsTo(db.User);
 
-db.Type.hasMany(db.Category);
-db.Category.belongsTo(db.Type);
+db.Category.hasMany(db.Budget);
+db.Budget.belongsTo(db.Category);
+
+db.Month.hasMany(db.Budget);
+db.Budget.belongsTo(db.Month);
 
 
 module.exports = db;

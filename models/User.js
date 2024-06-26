@@ -1,7 +1,4 @@
-const { DataTypes } = require('sequelize');
-
-module.exports = (sequelize, Sequelize) => {
-    // El Id se coloca automaticamente
+module.exports = (sequelize, DataTypes) => {
     const User = sequelize.define('User', {
         id: {
             allowNull: false,
