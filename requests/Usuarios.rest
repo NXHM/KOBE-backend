@@ -1,0 +1,39 @@
+####################################
+POST http://localhost:3000/api/createUser
+Content-Type: application/json
+
+{
+    "name": "Pepe Valdivia",
+    "username": "Pepe",
+    "email": "pepe@gmail.com",
+    "password": "Contra123!",
+    "confirmPassword": "Contra123!"
+}
+####################################
+POST http://localhost:3000/api/loginUser
+Content-Type: application/json
+
+{
+    "name": "Pepe Valdivia",
+    "username": "Pepe",
+    "email": "pepe@gmail.com",
+    "password": "Contra123!",
+    "confirmPassword": "Contra123!"
+}
+####################################
+POST http://localhost:3000/api/changePasswd
+Content-Type: application/json
+
+{
+    "userId": 2,
+    "newPassword": "Contra123!"
+}
+####################################
+POST http://localhost:3000/api/changeEmail
+Content-Type: application/json
+
+{
+    "userId": 2,
+    "newEmail": "otroemail@gmail.com"
+}
+####################################

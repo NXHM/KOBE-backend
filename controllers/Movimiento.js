@@ -6,18 +6,17 @@ const Op = db.Op;
 const Movement = db.Movement;
 
 const ingresarMovimiento = async (req, res) => {
-    const { fecha, tipo_id, categoria_id, monto, comentario, usuario_id } =
+    const { fecha, categoria_id, monto, comentario, usuario_id } =
         req.body;
 
     const query = `
-      INSERT INTO movimiento (fecha, tipo_id, categoria_id, monto, comentario, usuario_id)
-      VALUES ($1, $2, $3, $4, $5, $6)
+      INSERT INTO "Movement" (date, category_id, amount, detail, user_id)
+      VALUES ($1, $2, $3, $4, $5)
       RETURNING *;
     `;
 
     const values = [
         fecha,
-        tipo_id,
         categoria_id,
         monto,
         comentario,
@@ -155,7 +154,7 @@ const editarMovimiento = async (req, res) => {
     const { date, category_id, amount, detail } = req.body;
 
     const query = `
-    UPDATE public."Movement"
+    UPDATE "Movement"
     SET date = $1, category_id = $2, amount = $3, detail = $4
     WHERE id = $5
     RETURNING *;
@@ -185,7 +184,7 @@ const eliminarMovimiento = async (req, res) => {
     const { id } = req.params;
 
     const query = `
-    DELETE FROM public."Movement"
+    DELETE FROM "Movement"
     WHERE id = $1
     RETURNING *;
   `;

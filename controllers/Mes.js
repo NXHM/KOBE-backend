@@ -1,26 +1,17 @@
-const db = require('../db');
-
 const getDiasXMes = async (req, res) => {
-    const {month_id, year_id} = req.body;
+    const { month, year } = req.params;
+    const daysPerMonth = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
 
     try {
-        let month = await db.Month.findByPk(month_id);
-        let year = await db.Year.findByPk(year_id);
-
-        if (month && year) {
-            if (month.id == 2){
-                const isLeapYear = (year.name % 4 == 0 && (year.name % 100 != 0 || year.name % 400 == 0));
-                res.send(isLeapYear? {"dias": month.days + 1} :  {"dias": month.days});
-            } else {
-                res.send({"dias": month.days});
-            }
+        if (month == 2){
+            const isLeapYear = (year % 4 == 0 && (year % 100 != 0 || year % 400 == 0));
+            res.send(isLeapYear? {"dias": daysPerMonth[month-1] + 1} :  {"dias": daysPerMonth[month-1]});
         } else {
-            res.status(404).json({message: "Error al buscar el mes"});
+            res.send({"dias": daysPerMonth[month-1]});
         }
-        
     } catch (error) {
-        console.error("Error al buscar los meses: ", error);
-        res.status(500).json({error: "Error al buscar los meses."})
+        console.error("Error al recuperar el día según el mes: ", error);
+        res.status(500).json({error: "Error al recuperar el día según el mes."})
     }
 }
 

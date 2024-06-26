@@ -3,7 +3,7 @@ const { connection } = require('../models/db');
 const getTipo = async (req, res) => {
     try {
         console.log(connection.options)
-        const response = await connection.query('SELECT * FROM Tipo;');
+        const response = await connection.query('SELECT * FROM "Type";');
         res.status(200).json(response.rows);
         console.log("Se imprimieron tipos")
     } catch (error) {

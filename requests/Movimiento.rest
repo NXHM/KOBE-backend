@@ -2,12 +2,7 @@
 POST http://localhost:3000/api/ingresarMovimiento
 Content-Type: application/x-www-form-urlencoded
 
-fecha="2024-06-18T05:00:00.000Z
-tipo_id=2
-categoria_id=1
-monto=100
-comentario= "Gastos en comida"
-usuario_id=20213134
+fecha=2024-06-18&tipo_id=2&categoria_id=1&monto=100&comentario=Gastos%20en%20comida&usuario_id=1
 ###################################################
 POST http://localhost:3000/api/movimientos
 Content-Type: application/json
@@ -35,4 +30,16 @@ Content-Type: application/json
     "month": 1,
     "year": 2024
 }
+###################################################
+PUT http://localhost:3000/api/editmovimiento/1
+Content-Type: application/json
+
+{
+    "date": "2024-01-07",
+    "category_id": 1,
+    "amount": 1200.0,
+    "detail": "Salario Mensual"
+}
+###################################################
+DELETE http://localhost:3000/api/deletemovimiento/5
 ###################################################

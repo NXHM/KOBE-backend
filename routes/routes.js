@@ -9,6 +9,7 @@ const { createUser, loginUser } = require('../controllers/userController');
 const { changeEmail, changePasswd } = require('../controllers/userController');
 const { editarMovimiento, eliminarMovimiento } = require('../controllers/Movimiento');
 const { getPresupuesto, getPresupuestoPorCategoria, getPresupuestoPorTipo } = require('../controllers/Presupuesto');
+const { getDiasXMes } = require('../controllers/Mes');
 
 //-----------Definir rutas-----------
 // User
@@ -31,10 +32,12 @@ router.post('/movimientos/sumaTipo', getMontoPorTipoMovimiento);
 router.put('/editmovimiento/:id', editarMovimiento);
 router.delete('/deletemovimiento/:id', eliminarMovimiento);
 
-
 /* Presupuestos */
 router.post('/presupuestos', getPresupuesto);
 router.post('/presupuestos/sumaCategoria', getPresupuestoPorCategoria);
 router.post('/presupuestos/sumaTipo', getPresupuestoPorTipo);
+
+/* Meses */
+router.get('/dias/:month/:year', getDiasXMes);
 
 module.exports = router;

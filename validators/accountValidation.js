@@ -38,7 +38,7 @@ function validatePassword(req) {
         return "Password must contain at least one uppercase letter.";
     }
     // Minusculas - minimo 1
-    if (/[a-z]/.test(password)) {
+    if (!/[a-z]/.test(password)) {
         return "Password must contain at least one lowercase letter.";
     }
     // Números - minimo 1
