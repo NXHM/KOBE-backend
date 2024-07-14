@@ -4,6 +4,8 @@ const bcrypt = require('bcrypt');
 const nodemailer = require('nodemailer');
 require('dotenv').config();
 const { validateUsername, validatePassword, validateEmail } = require("../validators/accountValidation")
+const verificationCodes = {};
+
 const User = db.User; // Traigo al modelo del usuario
 
 // Crear usuario
@@ -16,7 +18,7 @@ const createUser = async (req, res) => {
     errors = validateEmail(req);
   }
   if (!errors) {
-    
+
     // Encripta la contraseña
     const hashedPassword = await bcrypt.hash(req.body.password, 10);
     // Crea la cuenta
@@ -66,74 +68,92 @@ const loginUser = async (req, res) => {
 }
 
 // Envia el email para la recuperación de contraseña
-const sendEmail = async (to) => {
+const sendVerificationCode = async (req, res) => {
+  const email = req.body.email;
   // Crea un código de verificación
   // padStart: rellena con ceros a la izquierda hasta que tenga 6 caracteres
   let verificationCode = Math.floor(Math.random() * 1000000).toString().padStart(6, '0');
 
-  // Configura el objeto de transporte con los datos del correo
-  let transporter = nodemailer.createTransport({
-    service: 'gmail', // usa Gmail como servicio
-    auth: {
-      user: process.env.EMAIL, // tu correo electrónico
-      pass: process.env.PASSWORD, // tu contraseña
-    },
-  });
-
-  // Configura las opciones del correo
-  let mailOptions = {
-    from: process.env.EMAIL, // email de quien envía
-    to: to, // correo de recuperacion
-    subject: "Changing Password", // Asunto
-    text:`Tu código de verificación es ${verificationCode}`, //Código de recuperacion"
+  // Almacenar el código con un tiempo de expiración (15 minutos)
+  verificationCodes[email] = {
+    code: verificationCode,
+    expiry: Date.now() + 15 * 60 * 1000
   };
 
-  // Enviar correo con el objeto de transporte definido
-  let info = await transporter.sendMail(mailOptions);
+  let transporter = nodemailer.createTransport({
+    service: 'gmail',
+    auth: {
+      user: process.env.EMAIL,
+      pass: process.env.PASSWORD,
+    }
+  });
 
-  console.log('Message sent: %s', info.messageId);
-  return verificationCode;
+  let mailOptions = {
+    from: process.env.EMAIL,
+    to: email,
+    subject: "Código de verificación para cambio de contraseña",
+    text: `Tu código de verificación es ${verificationCode}`,
+  };
+
+  try {
+    await transporter.sendMail(mailOptions);
+    res.status(200).json({ message: "Código de verificación enviado" });
+  } catch (error) {
+    console.error('Error al enviar el correo:', error);
+    res.status(500).json({ error: "Error al enviar el código de verificación" });
+  }
 };
 
-// Cambiar contraseña
-const changePassword = async (req, res) => {
-  // Envia el correo de recuperación y espera el código
-  const verification_code = sendEmail(req.body.email); 
-  const user_code = req.body.verificationCode;
-  if(verification_code === user_code){
-    const hashedPassword = await bcrypt.hash(req.body.newPassword, 10);
-    const result = await User.update(
-      { password: hashedPassword },
-      { where: { email: req.body.email } }
-    );
-    return res.status(200).json({
-      message: "User password updated succesfully",
-      result: result,
-    });
+// Función para verificar el código y cambiar la contraseña
+const verifyCodeAndChangePassword = async (req, res) => {
+  const { email, verificationCode, newPassword } = req.body;
+
+  // Verificar si el código es válido y no ha expirado
+  if (verificationCodes[email] && 
+      verificationCodes[email].code === verificationCode &&
+      verificationCodes[email].expiry > Date.now()) {
+    
+    try {
+      const hashedPassword = await bcrypt.hash(newPassword, 10);
+      await User.update(
+        { password: hashedPassword },
+        { where: { email: email } }
+      );
+
+      // Eliminar el código de verificación después de usarlo
+      delete verificationCodes[email];
+
+      res.status(200).json({ message: "Contraseña actualizada exitosamente" });
+    } catch (error) {
+      console.error('Error al actualizar la contraseña:', error);
+      res.status(500).json({ error: "Error al actualizar la contraseña" });
+    }
+  } else {
+    res.status(400).json({ error: "Código de verificación inválido o expirado" });
   }
 };
 
 // Cambio de correo
-const changeEmail = async(req, res) => {
-  const {userId, newEmail} = req.body
+const changeEmail = async (req, res) => {
+  const { userId, newEmail } = req.body
 
   await User.update(
-    {email: newEmail},
-    {where: {id: userId}}
+    { email: newEmail },
+    { where: { id: userId } }
   );
-  
+
   res.send('Email changed succesfully!');
 };
 
 // Cambio de contraseña
-const changePasswd = async(req, res) => {
-  const {userId, newPassword} = req.body
+const changePasswd = async (req, res) => {
+  const { userId, newPassword } = req.body
 
   await User.update(
-    {password: newPassword},
-    {where: {id: userId}}
+    { password: newPassword },
+    { where: { id: userId } }
   );
-  
+
   res.send('Password changed succesfully!');
 };
 
@@ -142,5 +162,7 @@ module.exports = {
   loginUser,
   changePassword,
   changeEmail,
-  changePasswd
+  changePasswd,
+  sendVerificationCode,
+  verifyCodeAndChangePassword
 }
