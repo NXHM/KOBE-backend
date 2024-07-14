@@ -38,8 +38,8 @@ const createUser = async (req, res) => {
   res.status(422).json({ errors: errors });
 };
 
+// Iniciar Sesión
 const loginUser = async (req, res) => {
-
   const username = req.body.username;
   const user = await User.findOne({
     where: {
