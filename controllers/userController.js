@@ -104,34 +104,51 @@ const sendVerificationCode = async (req, res) => {
   }
 };
 
-// Función para verificar el código y cambiar la contraseña
-const verifyCodeAndChangePassword = async (req, res) => {
-  const { email, verificationCode, newPassword } = req.body;
+const validateVerificationCode = async (req, res) => {
+  const { email, verificationCode } = req.body;
 
-  // Verificar si el código es válido y no ha expirado
   if (verificationCodes[email] && 
       verificationCodes[email].code === verificationCode &&
       verificationCodes[email].expiry > Date.now()) {
     
-    try {
-      const hashedPassword = await bcrypt.hash(newPassword, 10);
-      await User.update(
-        { password: hashedPassword },
-        { where: { email: email } }
-      );
-
-      // Eliminar el código de verificación después de usarlo
-      delete verificationCodes[email];
-
-      res.status(200).json({ message: "Contraseña actualizada exitosamente" });
-    } catch (error) {
-      console.error('Error al actualizar la contraseña:', error);
-      res.status(500).json({ error: "Error al actualizar la contraseña" });
-    }
+    // Marcar el código como verificado pero no eliminarlo aún
+    verificationCodes[email].verified = true;
+    
+    res.status(200).json({ message: "Código de verificación válido" });
   } else {
     res.status(400).json({ error: "Código de verificación inválido o expirado" });
   }
 };
+
+const changePassword = async (req, res) => {
+  const { email, newPassword, confirmPassword } = req.body;
+  // Verificar si el código fue validado previamente
+  if (!verificationCodes[email] || !verificationCodes[email].verified) {
+    return res.status(400).json({ error: "Debe verificar el código primero" });
+  }
+
+  // Verificar que las contraseñas coincidan
+  if (newPassword !== confirmPassword) {
+    return res.status(400).json({ error: "Las contraseñas no coinciden" });
+  }
+
+  try {
+    const hashedPassword = await bcrypt.hash(newPassword, 10);
+    await User.update(
+      { password: hashedPassword },
+      { where: { email: email } }
+    );
+
+    // Eliminar el código de verificación después de usarlo
+    delete verificationCodes[email];
+
+    res.status(200).json({ message: "Contraseña actualizada exitosamente" });
+  } catch (error) {
+    console.error('Error al actualizar la contraseña:', error);
+    res.status(500).json({ error: "Error al actualizar la contraseña" });
+  }
+};
+
 
 // Cambio de correo
 const changeEmail = async (req, res) => {
@@ -164,5 +181,5 @@ module.exports = {
   changeEmail,
   changePasswd,
   sendVerificationCode,
-  verifyCodeAndChangePassword
+  validateVerificationCode
 }

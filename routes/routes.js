@@ -6,7 +6,7 @@ const { getTipo  } = require('../controllers/Tipo');
 const { getCategoria  } = require('../controllers/Categoria');
 const { ingresarMovimiento, getMovimientos, getMontoPorCategoriaMovimiento, getMontoPorTipoMovimiento  } = require('../controllers/Movimiento');
 const { createUser, loginUser } = require('../controllers/userController');
-const { verifyCodeAndChangePassword, sendVerificationCode} = require('../controllers/userController');
+const { changePassword,validateVerificationCode, sendVerificationCode} = require('../controllers/userController');
 const { changeEmail, changePasswd } = require('../controllers/userController');
 const { editarMovimiento, eliminarMovimiento } = require('../controllers/Movimiento');
 const { getPresupuesto, getPresupuestoPorCategoria, getPresupuestoPorTipo } = require('../controllers/Presupuesto');
@@ -18,7 +18,8 @@ const { getDiasXMes } = require('../controllers/Mes');
 router.post('/createUser', createUser);
 router.post('/loginUser', loginUser);
 router.post('/requestVerification', sendVerificationCode);
-router.post('/changePassword', verifyCodeAndChangePassword);
+router.post('/validateCode', validateVerificationCode);
+router.post('/changePassword', changePassword);
 router.post('/changePasswd', changePasswd);
 router.post('/changeEmail', changeEmail);
 
