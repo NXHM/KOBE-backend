@@ -11,7 +11,7 @@ const { changeEmail, changePasswd } = require('../controllers/userController');
 const { editarMovimiento, eliminarMovimiento } = require('../controllers/Movimiento');
 const { getPresupuesto, getPresupuestoAgrupadoPorTipo,getPresupuestoPorCategoria, getPresupuestoPorTipo, createBudget, updateBudget} = require('../controllers/Presupuesto');
 const { validarToken } = require('../config/Middleware');
-const { getDiasXMes, getMeses } = require('../controllers/Mes');
+const { getDiasXMes, getAllMonths } = require('../controllers/Mes');
 
 //-----------Definir rutas-----------
 // User
@@ -52,6 +52,6 @@ router.get('/presupuestos/tipo', validarToken,getPresupuestoAgrupadoPorTipo);
 
 /* Meses */
 router.get('/dias/:month/:year', validarToken,getDiasXMes);
-router.get('/meses', validarToken, getMeses);
+router.get('/meses', validarToken, getAllMonths);
 
 module.exports = router;

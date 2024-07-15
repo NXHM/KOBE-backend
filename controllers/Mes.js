@@ -21,6 +21,19 @@ const getDiasXMes = async (req, res) => {
     }
 }
 
+
+const getAllMonths = async (req, res) => {
+  try {
+    const months = await Month.findAll();
+    res.status(200).json(months);
+  } catch (error) {
+    console.error('Database query error:', error);
+    res.status(500).json({ error: 'Error fetching data' });
+  }
+}
+
+
 module.exports = {
     getDiasXMes,
+    getAllMonths
 }
