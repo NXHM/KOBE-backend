@@ -13,6 +13,26 @@ module.exports = (sequelize, DataTypes) => {
                 allowNull: false,
                 unique: true,
             },
+            type_id: { // Clave foránea
+                type: DataTypes.INTEGER,
+                allowNull: false,
+                references: {
+                    model: 'Types',
+                    key: 'id',
+                },
+                onUpdate: 'CASCADE',
+                onDelete: 'CASCADE',
+            },
+            user_id: { // Nuevo campo user_id
+                type: DataTypes.INTEGER,
+                allowNull: false,
+                references: {
+                    model: 'Users',
+                    key: 'id',
+                },
+                onUpdate: 'CASCADE',
+                onDelete: 'CASCADE',
+            },
         },
         {
             freezeTableName: true,
@@ -20,6 +40,12 @@ module.exports = (sequelize, DataTypes) => {
             underscored: true,
         }
     );
-    
+
+    Category.associate = (models) => {
+        Category.belongsTo(models.Type, { foreignKey: 'type_id', as: 'type' });
+        Category.belongsTo(models.User, { foreignKey: 'user_id', as: 'user' });
+        Category.hasMany(models.Budget, { foreignKey: 'category_id', as: 'budgets' });
+    };
+
     return Category;
 };
