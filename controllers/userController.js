@@ -1,4 +1,5 @@
 const db = require("../models/db");
+const cookieParser = require('cookie-parser');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
 const nodemailer = require('nodemailer');
@@ -17,75 +18,89 @@ const createUser = async (req, res) => {
   if (!errors) {
     errors = validateEmail(req);
   }
+
   if (!errors) {
+    // Verifica si ya existe ese email
+    const userExists = await User.findOne({ where: { email: req.body.email } });
+    if (userExists) {
+      return res.status(401).json({error:"El correo ya está en uso. Por favor, utiliza otro correo."});
+    }
+    if (req.body.confirmPassword == req.body.password) {
+      // Encripta la contraseña
+      const hashedPassword = await bcrypt.hash(req.body.password, 10);
+      // Crea la cuenta
+      const user = {
+        name: req.body.name,
+        username: req.body.username,
+        email: req.body.email,
+        password: hashedPassword,
+        //userId: req.body.userId,
+      };
 
-    // Encripta la contraseña
-    const hashedPassword = await bcrypt.hash(req.body.password, 10);
-    // Crea la cuenta
-    const user = {
-      name: req.body.name,
-      username: req.body.username,
-      email: req.body.email,
-      password: hashedPassword,
-      //userId: req.body.userId,
-    };
-
-    const result = await User.create(user);
-
+      const result = await User.create(user);
+    
     return res.status(200).json({
       message: "User account created succesfully",
       result: result,
     });
   }
+  }
   res.status(422).json({ errors: errors });
 };
 
 const loginUser = async (req, res) => {
-  const username = req.body.username;
-  const password = req.body.password;
-
   try {
-    const user = await User.findOne({ where: { username: username } });
-    
-    if (!user) {
-      return res.status(401).json({ error: 'Usuario no encontrado' });
-    }
-
-    const equalsPasswords = await bcrypt.compare(password, user.password);
-    
-    if (!equalsPasswords) {
-      return res.status(401).json({ error: 'Contraseña incorrecta' });
-    }
-
-    const token = jwt.sign(
-      {
-        username: user.username,
-        // userId: user.userId,
+    const username = req.body.username;
+  
+    const user = await User.findOne({
+      where: {
+        username: username,
       },
-      "ClaveSecreta", // La clave secreta
-      {
-        expiresIn: "1h",
-      }
-    );
-
-    return res.status(200).json({
-      message: "User logged in",
-      token: token,
     });
-    
+  
+    if (!user) {
+      return res.status(404).json({
+        message: "Usuario no encontrado",
+      });
+    }
+  
+    const equalsPasswords = await bcrypt.compare(req.body.password, user.password);
+    if (equalsPasswords) {
+      const token = jwt.sign(
+        {
+          username: user.username,
+          userId: user.userId,
+        },
+        "ClaveSecreta", // La clave secreta
+        {
+          expiresIn: "1h",
+        }
+      );
+      return res.status(200).json({
+        message: "Usuario logueado",
+        token: token,
+      });
+    } else {
+      return res.status(401).json({
+        message: "Contraseña incorrecta",
+      });
+    }
   } catch (error) {
-    console.error('Error al iniciar sesión:', error);
-    return res.status(500).json({ error: 'Error al iniciar sesión' });
-  }
-};
+    return res.status(500).json({
+      message: "Error al buscar el usuario",
+      error: error.message,
 
-module.exports = {
-  loginUser,
+    });
+  }
 };
 
 // Envia el email para la recuperación de contraseña
 const sendVerificationCode = async (req, res) => {
   const email = req.body.email;
+  const user = await User.findOne({ where: { email } });
+  if (!user) {
+    return res.status(404).json({ message: "Email no registrado." });
+  }
   // Crea un código de verificación
   // padStart: rellena con ceros a la izquierda hasta que tenga 6 caracteres
   let verificationCode = Math.floor(Math.random() * 1000000).toString().padStart(6, '0');
@@ -123,13 +138,13 @@ const sendVerificationCode = async (req, res) => {
 const validateVerificationCode = async (req, res) => {
   const { email, verificationCode } = req.body;
 
-  if (verificationCodes[email] && 
-      verificationCodes[email].code === verificationCode &&
-      verificationCodes[email].expiry > Date.now()) {
-    
+  if (verificationCodes[email] &&
+    verificationCodes[email].code === verificationCode &&
+    verificationCodes[email].expiry > Date.now()) {
+
     // Marcar el código como verificado pero no eliminarlo aún
     verificationCodes[email].verified = true;
-    
+
     res.status(200).json({ message: "Código de verificación válido" });
   } else {
     res.status(400).json({ error: "Código de verificación inválido o expirado" });
@@ -165,6 +180,67 @@ const changePassword = async (req, res) => {
   }
 };
 
+// Iniciar sesión
+const loginUserWithCookies = async (req, res) => {
+  try {
+    const { username, password } = req.body;
+  
+    const user = await User.findOne({ where: { username } });
+    if (!user)
+      return res.status(404).json({ message: "Usuario no encontrado." });
+  
+    const isMatch = await bcrypt.compare(password, user.password);
+    if (!isMatch)
+      return res.status(404).json({ message: "Contraseña incorrecta." });
+    
+    const token = jwt.sign(
+      {
+        id: user.id,
+        username: user.username
+      },
+      'SuperSecretPassword',
+      { expiresIn: "1h" }
+    );
+
+    return res
+      .cookie('access_token', token, 
+        {
+          httpOnly: true,
+          secure: true,
+          sameSite: 'strict',
+          maxAge: 1000 * 60 * 60
+        }
+      )
+      .status(200).json({ message: "Inicio de sesión exitoso." });
+  } catch (error) {
+    return res.status(500).json({
+      message: "Error al buscar al usuario.",
+      error: error.message,
+    });
+  }
+};
+
+// Cerrar sesión
+const logoutUser = (req, res) => {
+  res
+    .clearCookie('access_token')
+    .status(200).json({ message: "Cierre de sesión exitoso." });
+};
+
+// Conseguir información de perfil
+const getUserData = async (req, res) => {
+  const { id, username } = req.session.user;
+
+  const user = await User.findOne({ where: { username } });
+  if (!user)
+    return res.status(404).json({ message: "Usuario no encontrado." });
+
+  res.status(200).json({
+    username: username,
+    name: user.username,
+    email: user.email
+  });
+};
 
 // Cambio de correo
 const changeEmail = async (req, res) => {
@@ -193,6 +269,9 @@ const changePasswd = async (req, res) => {
 module.exports = {
   createUser,
   loginUser,
+  loginUserWithCookies,
+  logoutUser,
+  getUserData,
   changePassword,
   changeEmail,
   changePasswd,

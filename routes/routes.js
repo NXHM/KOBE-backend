@@ -5,18 +5,21 @@ const router     = express.Router();
 const { getTipo  } = require('../controllers/Tipo');
 const { getCategoria,updateCategoria,deleteCategoria, createCategoria  } = require('../controllers/Categoria');
 const { ingresarMovimiento, getMovimientos, getMontoPorCategoriaMovimiento, getMontoPorTipoMovimiento  } = require('../controllers/Movimiento');
-const { createUser, loginUser } = require('../controllers/userController');
+const { createUser, loginUser, loginUserWithCookies, logoutUser, getUserData } = require('../controllers/userController');
 const { changePassword,validateVerificationCode, sendVerificationCode} = require('../controllers/userController');
 const { changeEmail, changePasswd } = require('../controllers/userController');
 const { editarMovimiento, eliminarMovimiento } = require('../controllers/Movimiento');
 const { getPresupuesto, getPresupuestoAgrupadoPorTipo,getPresupuestoPorCategoria, getPresupuestoPorTipo, createBudget, updateBudget} = require('../controllers/Presupuesto');
 const { validarToken } = require('../config/Middleware');
-const { getDiasXMes, getAllMonths } = require('../controllers/Mes');
+const { getDiasXMes, getMeses } = require('../controllers/Mes');
 
 //-----------Definir rutas-----------
 // User
 router.post('/createUser', createUser);
 router.post('/loginUser', loginUser);
+router.post('/loginUserWithCookies', loginUserWithCookies);
+router.get('/logoutUser', logoutUser);
+router.get('/getUserData', getUserData);
 router.post('/requestVerification', sendVerificationCode);
 router.post('/validateCode', validateVerificationCode);
 router.post('/changePassword', changePassword);
@@ -49,6 +52,6 @@ router.get('/presupuestos/tipo', validarToken,getPresupuestoAgrupadoPorTipo);
 
 /* Meses */
 router.get('/dias/:month/:year', validarToken,getDiasXMes);
-router.get('/meses', validarToken,getAllMonths);
+router.get('/meses', validarToken, getMeses);
 
 module.exports = router;

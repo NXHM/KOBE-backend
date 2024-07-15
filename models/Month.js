@@ -5,6 +5,7 @@ module.exports = (sequelize, DataTypes) => {
           id: {
               allowNull: false,
               primaryKey: true,
+              autoIncrement: true,
               type: DataTypes.INTEGER,
           },
           name: {
@@ -19,10 +20,6 @@ module.exports = (sequelize, DataTypes) => {
           underscored: true,
       }
   );
-
-  Month.associate = (models) => {
-      Month.hasMany(models.Budget, { foreignKey: 'month_id', as: 'budgets' });
-  };
 
   return Month;
 };

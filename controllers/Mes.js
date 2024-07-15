@@ -1,5 +1,8 @@
-const { connection } = require("../models/db");
 const db = require("../models/db");
+
+const Sequelize = db.Sequelize;
+const Op = db.Op;
+const Month = db.Month;
 
 const getDiasXMes = async (req, res) => {
     const { month, year } = req.params;
@@ -18,19 +21,6 @@ const getDiasXMes = async (req, res) => {
     }
 }
 
-const getAllMonths = async (req, res) => {
-    try {
-        console.log(connection.options)
-        const response = await connection.query('SELECT * FROM "Month";');
-        res.status(200).json(response.rows);
-        console.log("Se imprimieron meses")
-    } catch (error) {
-        console.error('Database query error:', error);
-        res.status(500).json({ error: 'Error fetching data' });
-    }
-};
-
 module.exports = {
     getDiasXMes,
-    getAllMonths
 }
