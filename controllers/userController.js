@@ -40,32 +40,48 @@ const createUser = async (req, res) => {
   res.status(422).json({ errors: errors });
 };
 
-// Iniciar Sesión
 const loginUser = async (req, res) => {
   const username = req.body.username;
-  const user = await User.findOne({
-    where: {
-      username: username,
-    },
-  });
-  const equalsPasswords = await bcrypt.compare(req.body.password, user.password);
-  if (equalsPasswords) {
+  const password = req.body.password;
+
+  try {
+    const user = await User.findOne({ where: { username: username } });
+    
+    if (!user) {
+      return res.status(401).json({ error: 'Usuario no encontrado' });
+    }
+
+    const equalsPasswords = await bcrypt.compare(password, user.password);
+    
+    if (!equalsPasswords) {
+      return res.status(401).json({ error: 'Contraseña incorrecta' });
+    }
+
     const token = jwt.sign(
       {
         username: user.username,
-        //userId: user.userId,
+        // userId: user.userId,
       },
       "ClaveSecreta", // La clave secreta
       {
         expiresIn: "1h",
       }
     );
+
     return res.status(200).json({
       message: "User logged in",
       token: token,
     });
+    
+  } catch (error) {
+    console.error('Error al iniciar sesión:', error);
+    return res.status(500).json({ error: 'Error al iniciar sesión' });
   }
-}
+};
+
+module.exports = {
+  loginUser,
+};
 
 // Envia el email para la recuperación de contraseña
 const sendVerificationCode = async (req, res) => {

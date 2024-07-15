@@ -6,6 +6,28 @@ const Budget = db.Budget;
 const Category = db.Category;
 const Type = db.Type;
 
+const createBudget = async (req, res) => {
+    const { amount, year, user_id, category_id, month_id } = req.body;
+
+    try {
+        const newBudget = await Budget.create({
+            amount,
+            year,
+            user_id,
+            category_id,
+            month_id
+        });
+
+        return res.status(201).json({
+            message: "Budget created successfully",
+            budget: newBudget
+        });
+    } catch (error) {
+        console.error('Error creating budget:', error);
+        return res.status(500).json({ error: 'Error creating budget' });
+    }
+};
+
 const getPresupuesto = async (req, res) => {
     const { month_id, user_id} = req.body;
 
@@ -115,8 +137,39 @@ const getPresupuestoPorTipo = async (req, res) => {
     }
 }
 
+const updateBudget = async (req, res) => {
+    const { id } = req.params;
+    const { amount, year, user_id, category_id, month_id } = req.body;
+
+    try {
+        const budget = await Budget.findByPk(id);
+
+        if (!budget) {
+            return res.status(404).json({ error: 'Budget not found' });
+        }
+
+        budget.amount = amount;
+        budget.year = year;
+        budget.user_id = user_id;
+        budget.category_id = category_id;
+        budget.month_id = month_id;
+
+        await budget.save();
+
+        return res.status(200).json({
+            message: "Budget updated successfully",
+            budget: budget
+        });
+    } catch (error) {
+        console.error('Error updating budget:', error);
+        return res.status(500).json({ error: 'Error updating budget' });
+    }
+};
+
 module.exports = {
     getPresupuesto,
     getPresupuestoPorCategoria,
     getPresupuestoPorTipo,
+    createBudget,
+    updateBudget
 }

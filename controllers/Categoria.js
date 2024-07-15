@@ -1,4 +1,4 @@
-const { connection } = require('../models/db');
+const { connection, Category, Budget, Month,sequelize} = require('../models/db');
 
 const getCategoria = async (req, res) => {
     try {
@@ -12,6 +12,111 @@ const getCategoria = async (req, res) => {
     }
 };
 
+const createCategoria = async (req, res) => {
+    const { name, type_id, user_id } = req.body;
+
+    try {
+        // Crear la categoría
+        const newCategory = await Category.create({
+            name,
+            type_id,
+            user_id // Incluir user_id al crear la categoría
+        });
+
+        // Obtener todos los meses
+        const months = await Month.findAll();
+
+        // Crear registros en Budget para cada mes hasta 2026
+        const budgets = [];
+        for (let year = new Date().getFullYear(); year <= 2026; year++) {
+            for (let month of months) {
+                budgets.push({
+                    amount: 0,
+                    year: year,
+                    category_id: newCategory.id, // Correctamente usar newCategory.id
+                    month_id: month.id, // Correctamente usar month.id
+                    user_id: user_id // Correctamente usar user_id de los params
+                });
+            }
+        }
+
+        await Budget.bulkCreate(budgets);
+
+        return res.status(201).json({
+            message: "Category and associated budgets created successfully",
+            category: newCategory
+        });
+    } catch (error) {
+        console.error('Error creating category and budgets:', error);
+        return res.status(500).json({ error: 'Error creating category and budgets' });
+    }
+};
+
+
+const updateCategoria = async (req, res) => {
+    const { id } = req.params;
+    const { name } = req.body;
+
+    const query = `
+    UPDATE "Category"
+    SET name = $1
+    WHERE id = $2
+    RETURNING *;
+  `;
+
+    const values = [name, id];
+
+    try {
+        const { rows } = await connection.query(query, values);
+        if (rows.length === 0) {
+            return res.status(404).json({ error: "Categoría no encontrada" });
+        }
+        res.status(200).json({
+            mensaje: "Categoría actualizada correctamente",
+            categoria: rows[0],
+        });
+        console.log("Categoría editada correctamente");
+    } catch (error) {
+        console.error("Error al editar categoría:", error);
+        res.status(500).json({
+            error: "Hubo un problema al editar la categoría",
+        });
+    }
+};
+
+
+const deleteCategoria = async (req, res) => {
+    const { id } = req.params;
+
+    try {
+        await sequelize.transaction(async (t) => {
+            // Eliminar registros en Budget relacionados con la categoría
+            await Budget.destroy({
+                where: { category_id: id },
+                transaction: t
+            });
+
+            // Eliminar la categoría
+            const result = await Category.destroy({
+                where: { id: id },
+                transaction: t
+            });
+
+            if (result === 0) {
+                return res.status(404).json({ error: 'Category not found' });
+            }
+
+            return res.status(200).json({ message: 'Category and associated budgets deleted successfully' });
+        });
+    } catch (error) {
+        console.error('Error deleting category and budgets:', error);
+        return res.status(500).json({ error: 'Error deleting category and budgets' });
+    }
+};
+
 module.exports = {
     getCategoria,
+    createCategoria,
+    updateCategoria,
+    deleteCategoria
 };

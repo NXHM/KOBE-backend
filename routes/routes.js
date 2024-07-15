@@ -3,7 +3,7 @@ const router     = express.Router();
 
 //Importar consultas
 const { getTipo  } = require('../controllers/Tipo');
-const { getCategoria  } = require('../controllers/Categoria');
+const { getCategoria,updateCategoria,deleteCategoria, createCategoria  } = require('../controllers/Categoria');
 const { ingresarMovimiento, getMovimientos, getMontoPorCategoriaMovimiento, getMontoPorTipoMovimiento  } = require('../controllers/Movimiento');
 const { createUser, loginUser } = require('../controllers/userController');
 const { changePassword,validateVerificationCode, sendVerificationCode} = require('../controllers/userController');
@@ -26,7 +26,9 @@ router.post('/changeEmail', changeEmail);
 //Tipo
 router.get('/tipo', validarToken, getTipo);
 router.get('/categoria', validarToken, getCategoria);
-
+router.post('/createCategoria/', validarToken, createCategoria)
+router.put('/updatecategoria/:id', validarToken,updateCategoria);
+router.delete('/deletecategoria/:id', validarToken, deleteCategoria);
 //Movimientos
 router.post('/ingresarMovimiento', validarToken, ingresarMovimiento);
 router.post('/movimientos', validarToken, getMovimientos);
