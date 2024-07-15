@@ -1,4 +1,5 @@
 const db = require("../models/db");
+const cookieParser = require('cookie-parser');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
 const nodemailer = require('nodemailer');
@@ -93,10 +94,6 @@ const loginUser = async (req, res) => {
   }
 };
 
-module.exports = {
-  loginUser,
-};
-
 // Envia el email para la recuperación de contraseña
 const sendVerificationCode = async (req, res) => {
   const email = req.body.email;
@@ -183,6 +180,67 @@ const changePassword = async (req, res) => {
   }
 };
 
+// Iniciar sesión
+const loginUserWithCookies = async (req, res) => {
+  try {
+    const { username, password } = req.body;
+  
+    const user = await User.findOne({ where: { username } });
+    if (!user)
+      return res.status(404).json({ message: "Usuario no encontrado." });
+  
+    const isMatch = await bcrypt.compare(password, user.password);
+    if (!isMatch)
+      return res.status(404).json({ message: "Contraseña incorrecta." });
+    
+    const token = jwt.sign(
+      {
+        id: user.id,
+        username: user.username
+      },
+      'SuperSecretPassword',
+      { expiresIn: "1h" }
+    );
+
+    return res
+      .cookie('access_token', token, 
+        {
+          httpOnly: true,
+          secure: true,
+          sameSite: 'strict',
+          maxAge: 1000 * 60 * 60
+        }
+      )
+      .status(200).json({ message: "Inicio de sesión exitoso." });
+  } catch (error) {
+    return res.status(500).json({
+      message: "Error al buscar al usuario.",
+      error: error.message,
+    });
+  }
+};
+
+// Cerrar sesión
+const logoutUser = (req, res) => {
+  res
+    .clearCookie('access_token')
+    .status(200).json({ message: "Cierre de sesión exitoso." });
+};
+
+// Conseguir información de perfil
+const getUserData = async (req, res) => {
+  const { id, username } = req.session.user;
+
+  const user = await User.findOne({ where: { username } });
+  if (!user)
+    return res.status(404).json({ message: "Usuario no encontrado." });
+
+  res.status(200).json({
+    username: username,
+    name: user.username,
+    email: user.email
+  });
+};
 
 // Cambio de correo
 const changeEmail = async (req, res) => {
@@ -211,6 +269,9 @@ const changePasswd = async (req, res) => {
 module.exports = {
   createUser,
   loginUser,
+  loginUserWithCookies,
+  logoutUser,
+  getUserData,
   changePassword,
   changeEmail,
   changePasswd,

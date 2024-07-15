@@ -5,7 +5,7 @@ const router     = express.Router();
 const { getTipo  } = require('../controllers/Tipo');
 const { getCategoria,updateCategoria,deleteCategoria, createCategoria  } = require('../controllers/Categoria');
 const { ingresarMovimiento, getMovimientos, getMontoPorCategoriaMovimiento, getMontoPorTipoMovimiento  } = require('../controllers/Movimiento');
-const { createUser, loginUser } = require('../controllers/userController');
+const { createUser, loginUser, loginUserWithCookies, logoutUser, getUserData } = require('../controllers/userController');
 const { changePassword,validateVerificationCode, sendVerificationCode} = require('../controllers/userController');
 const { changeEmail, changePasswd } = require('../controllers/userController');
 const { editarMovimiento, eliminarMovimiento } = require('../controllers/Movimiento');
@@ -17,6 +17,9 @@ const { getDiasXMes, getMeses } = require('../controllers/Mes');
 // User
 router.post('/createUser', createUser);
 router.post('/loginUser', loginUser);
+router.post('/loginUserWithCookies', loginUserWithCookies);
+router.get('/logoutUser', logoutUser);
+router.get('/getUserData', getUserData);
 router.post('/requestVerification', sendVerificationCode);
 router.post('/validateCode', validateVerificationCode);
 router.post('/changePassword', changePassword);
