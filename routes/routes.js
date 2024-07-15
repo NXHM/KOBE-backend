@@ -9,9 +9,9 @@ const { createUser, loginUser } = require('../controllers/userController');
 const { changePassword,validateVerificationCode, sendVerificationCode} = require('../controllers/userController');
 const { changeEmail, changePasswd } = require('../controllers/userController');
 const { editarMovimiento, eliminarMovimiento } = require('../controllers/Movimiento');
-const { getPresupuesto, getPresupuestoPorCategoria, getPresupuestoPorTipo } = require('../controllers/Presupuesto');
+const { getPresupuesto, getPresupuestoAgrupadoPorTipo,getPresupuestoPorCategoria, getPresupuestoPorTipo, createBudget, updateBudget} = require('../controllers/Presupuesto');
 const { validarToken } = require('../config/Middleware');
-const { getDiasXMes } = require('../controllers/Mes');
+const { getDiasXMes, getAllMonths } = require('../controllers/Mes');
 
 //-----------Definir rutas-----------
 // User
@@ -26,7 +26,7 @@ router.post('/changeEmail', changeEmail);
 //Tipo
 router.get('/tipo', validarToken, getTipo);
 router.get('/categoria', validarToken, getCategoria);
-router.post('/createCategoria/', validarToken, createCategoria)
+router.post('/createCategoria', validarToken, createCategoria)
 router.put('/updatecategoria/:id', validarToken,updateCategoria);
 router.delete('/deletecategoria/:id', validarToken, deleteCategoria);
 //Movimientos
@@ -40,11 +40,15 @@ router.put('/editmovimiento/:id', validarToken, editarMovimiento);
 router.delete('/deletemovimiento/:id', eliminarMovimiento);
 
 /* Presupuestos */
-router.post('/presupuestos', validarToken,getPresupuesto);
+router.get('/presupuestos', validarToken,getPresupuesto);
 router.post('/presupuestos/sumaCategoria', validarToken,getPresupuestoPorCategoria);
 router.post('/presupuestos/sumaTipo',validarToken, getPresupuestoPorTipo);
+router.post('/createBudget', createBudget);
+router.put('/updateBudget', updateBudget);
+router.get('/presupuestos/tipo', validarToken,getPresupuestoAgrupadoPorTipo);
 
 /* Meses */
 router.get('/dias/:month/:year', validarToken,getDiasXMes);
+router.get('/meses', validarToken,getAllMonths);
 
 module.exports = router;
