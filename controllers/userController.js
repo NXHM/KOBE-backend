@@ -18,51 +18,72 @@ const createUser = async (req, res) => {
     errors = validateEmail(req);
   }
   if (!errors) {
+    console.log(req.body);
+    if (req.body.confirmPassword == req.body.password) {
+      // Encripta la contraseña
+      const hashedPassword = await bcrypt.hash(req.body.password, 10);
+      // Crea la cuenta
+      const user = {
+        name: req.body.name,
+        username: req.body.username,
+        email: req.body.email,
+        password: hashedPassword,
+        //userId: req.body.userId,
+      };
 
-    // Encripta la contraseña
-    const hashedPassword = await bcrypt.hash(req.body.password, 10);
-    // Crea la cuenta
-    const user = {
-      name: req.body.name,
-      username: req.body.username,
-      email: req.body.email,
-      password: hashedPassword,
-      //userId: req.body.userId,
-    };
-
-    const result = await User.create(user);
-
+      const result = await User.create(user);
+    
     return res.status(200).json({
       message: "User account created succesfully",
       result: result,
     });
+  }
   }
   res.status(422).json({ errors: errors });
 };
 
 // Iniciar Sesión
 const loginUser = async (req, res) => {
-  const username = req.body.username;
-  const user = await User.findOne({
-    where: {
-      username: username,
-    },
-  });
-  const equalsPasswords = await bcrypt.compare(req.body.password, user.password);
-  if (equalsPasswords) {
-    const token = jwt.sign(
-      {
-        username: user.username,
-        //userId: user.userId,
+  try {
+    const username = req.body.username;
+  
+    const user = await User.findOne({
+      where: {
+        username: username,
       },
-      "ClaveSecreta", // La clave secreta
-      {
-        expiresIn: "1h",
-      }
-    );
-    return res.status(200).json({
-      message: "User logged in",
-      token: token,
+    });
+  
+    if (!user) {
+      return res.status(404).json({
+        message: "Usuario no encontrado",
+      });
+    }
+  
+    const equalsPasswords = await bcrypt.compare(req.body.password, user.password);
+    if (equalsPasswords) {
+      const token = jwt.sign(
+        {
+          username: user.username,
+          userId: user.userId,
+        },
+        "ClaveSecreta", // La clave secreta
+        {
+          expiresIn: "1h",
+        }
+      );
+      return res.status(200).json({
+        message: "Usuario logueado",
+        token: token,
+      });
+    } else {
+      return res.status(401).json({
+        message: "Contraseña incorrecta",
+      });
+    }
+  } catch (error) {
+    return res.status(500).json({
+      message: "Error al buscar el usuario",
+      error: error.message,
     });
   }
 }
@@ -107,13 +128,13 @@ const sendVerificationCode = async (req, res) => {
 const validateVerificationCode = async (req, res) => {
   const { email, verificationCode } = req.body;
 
-  if (verificationCodes[email] && 
-      verificationCodes[email].code === verificationCode &&
-      verificationCodes[email].expiry > Date.now()) {
-    
+  if (verificationCodes[email] &&
+    verificationCodes[email].code === verificationCode &&
+    verificationCodes[email].expiry > Date.now()) {
+
     // Marcar el código como verificado pero no eliminarlo aún
     verificationCodes[email].verified = true;
-    
+
     res.status(200).json({ message: "Código de verificación válido" });
   } else {
     res.status(400).json({ error: "Código de verificación inválido o expirado" });
