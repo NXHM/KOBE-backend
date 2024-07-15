@@ -17,8 +17,13 @@ const createUser = async (req, res) => {
   if (!errors) {
     errors = validateEmail(req);
   }
+
   if (!errors) {
-    console.log(req.body);
+    // Verifica si ya existe ese email
+    const userExists = await User.findOne({ where: { email: req.body.email } });
+    if (userExists) {
+      return res.status(401).json({error:"El correo ya está en uso. Por favor, utiliza otro correo."});
+    }
     if (req.body.confirmPassword == req.body.password) {
       // Encripta la contraseña
       const hashedPassword = await bcrypt.hash(req.body.password, 10);
@@ -95,6 +100,10 @@ module.exports = {
 // Envia el email para la recuperación de contraseña
 const sendVerificationCode = async (req, res) => {
   const email = req.body.email;
+  const user = await User.findOne({ where: { email } });
+  if (!user) {
+    return res.status(404).json({ message: "Email no registrado." });
+  }
   // Crea un código de verificación
   // padStart: rellena con ceros a la izquierda hasta que tenga 6 caracteres
   let verificationCode = Math.floor(Math.random() * 1000000).toString().padStart(6, '0');
