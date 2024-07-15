@@ -3,7 +3,7 @@ require('dotenv').config();
 module.exports = {
   database:  'kobe-budget-app',
   username: 'postgres',
-  password:  process.env.DB_PASSWORD, // Para los demás es postgres
+  password:  'postgres',// process.env.DB_PASSWORD// Para los demás es postgres
   host: 'localhost',
   dialect: 'postgres',
 };

@@ -1,3 +1,9 @@
+const db = require("../models/db");
+
+const Sequelize = db.Sequelize;
+const Op = db.Op;
+const Month = db.Month;
+
 const getDiasXMes = async (req, res) => {
     const { month, year } = req.params;
     const daysPerMonth = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
@@ -15,6 +21,21 @@ const getDiasXMes = async (req, res) => {
     }
 }
 
+const getMeses = async (req, res) => {
+    try {
+        const months = await Month.findAll();
+        if (months) {
+            res.send(months);
+        } else {
+            res.status(404).json({message: "No existen meses."});
+        }
+    } catch (error) {
+        console.error("Error al buscar meses: ", error);
+        res.status(500).json({ error: "Error al buscar meses." });
+    }
+}
+
 module.exports = {
     getDiasXMes,
+    getMeses,
 }

@@ -42,7 +42,6 @@ const createUser = async (req, res) => {
   res.status(422).json({ errors: errors });
 };
 
-// Iniciar Sesión
 const loginUser = async (req, res) => {
   try {
     const username = req.body.username;
@@ -84,9 +83,14 @@ const loginUser = async (req, res) => {
     return res.status(500).json({
       message: "Error al buscar el usuario",
       error: error.message,
+
     });
   }
-}
+};
+
+module.exports = {
+  loginUser,
+};
 
 // Envia el email para la recuperación de contraseña
 const sendVerificationCode = async (req, res) => {
