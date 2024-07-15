@@ -49,7 +49,7 @@ db.User.hasMany(db.Movement);
 db.Movement.belongsTo(db.User);
 
 db.User.hasMany(db.Category);
-db.Movement.belongsTo(db.User);
+db.Category.belongsTo(db.User);
 
 db.User.hasMany(db.Budget);
 db.Budget.belongsTo(db.User);

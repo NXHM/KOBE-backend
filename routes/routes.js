@@ -46,6 +46,6 @@ router.post('/presupuestos/sumaTipo',validarToken, getPresupuestoPorTipo);
 
 /* Meses */
 router.get('/dias/:month/:year', validarToken,getDiasXMes);
-router.get('/meses', getMeses);
+router.get('/meses', validarToken, getMeses);
 
 module.exports = router;
