@@ -6,21 +6,17 @@ const Op = db.Op;
 const Movement = db.Movement;
 
 const ingresarMovimiento = async (req, res) => {
-    const { fecha, categoria_id, monto, comentario, usuario_id } =
+    const { amount, detail, date, user_id, category_id } =
         req.body;
-
+    console.log(req.body.values)
     const query = `
-      INSERT INTO "Movement" (date, category_id, amount, detail, user_id)
+      INSERT INTO "Movement" (amount, detail, date, user_id, category_id)
       VALUES ($1, $2, $3, $4, $5)
       RETURNING *;
     `;
 
     const values = [
-        fecha,
-        categoria_id,
-        monto,
-        comentario,
-        usuario_id,
+        amount, detail, date, user_id, category_id
     ];
 
     try {
