@@ -34,7 +34,7 @@ router.post('/createCategoria', validarToken, createCategoria)
 router.put('/updatecategoria/:id', validarToken,updateCategoria);
 router.delete('/deletecategoria/:id', validarToken, deleteCategoria);
 //Movimientos
-router.post('/ingresarMovimiento', validarToken, ingresarMovimiento);
+router.post('/ingresarMovimiento', ingresarMovimiento);
 router.post('/movimientos', validarToken, getMovimientos);
 router.post('/movimientos2', validarToken, getMovements);
 router.post('/movimientos/sumaCategorias', validarToken, getMontoPorCategoriaMovimiento);
