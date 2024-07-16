@@ -69,7 +69,7 @@ const loginUser = async (req, res) => {
       const token = jwt.sign(
         {
           username: user.username,
-          userId: user.userId,
+          id: user.id,
         },
         "ClaveSecreta", // La clave secreta
         {
@@ -229,17 +229,21 @@ const logoutUser = (req, res) => {
 
 // Conseguir información de perfil
 const getUserData = async (req, res) => {
-  const { id, username } = req.session.user;
+  try {
+    const id = req.id;
+    
+    const user = await User.findOne({ where: { id } });
+    if (!user)
+      return res.status(404).json({ message: "Usuario no encontrado." });
 
-  const user = await User.findOne({ where: { username } });
-  if (!user)
-    return res.status(404).json({ message: "Usuario no encontrado." });
-
-  res.status(200).json({
-    username: username,
-    name: user.username,
-    email: user.email
-  });
+    res.status(200).json({
+      username: user.username,
+      name: user.name,
+      email: user.email
+    });
+  } catch (error) {
+    return res.status(404).json({ message: "No existe sesión autenticada." });
+  }
 };
 
 // Cambio de correo

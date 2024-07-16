@@ -12,7 +12,7 @@ const validarToken = (req, res, next) => {
   try {
     // Verificar el token
     const cifrado = jwt.verify(token, "ClaveSecreta");
-    req.username = cifrado.username;
+    req.id = cifrado.id;
     next(); // Pasar al siguiente middleware
   } catch (error) {
     // Proporcionar mensajes de error específicos basados en el tipo de error

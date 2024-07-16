@@ -19,7 +19,7 @@ router.post('/createUser', createUser);
 router.post('/loginUser', loginUser);
 router.post('/loginUserWithCookies', loginUserWithCookies);
 router.get('/logoutUser', logoutUser);
-router.get('/getUserData', getUserData);
+router.get('/getUserData', validarToken, getUserData);
 router.post('/requestVerification', sendVerificationCode);
 router.post('/validateCode', validateVerificationCode);
 router.post('/changePassword', changePassword);

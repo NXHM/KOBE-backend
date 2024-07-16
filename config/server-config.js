@@ -11,7 +11,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 // Se añade el CORS
-app.use(cors());
+app.use(cors('*'));
 // Permite que cualquiera pueda hacer consulta
 app.options('*', cors());
 
