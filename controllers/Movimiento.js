@@ -1,4 +1,4 @@
-const { connection } = require("../models/db");
+const { connection, Category,Type } = require("../models/db");
 const db = require("../models/db");
 
 const Sequelize = db.Sequelize;
@@ -37,6 +37,53 @@ const ingresarMovimiento = async (req, res) => {
         });
     }
 };
+
+const getMovements = async (req, res) => {
+    const user_id = req.id; // Extraer user_id del middleware
+
+    try {
+        // Buscar todos los movimientos del usuario
+        const movements = await Movement.findAll({
+            where: {
+                user_id: user_id
+            },
+            attributes: ['id', 'amount', 'detail', 'date'],
+            include: [
+                {
+                    model: Category,
+                    attributes: ['name'],
+                    include: [
+                        {
+                            model: Type,
+                            attributes: ['name']
+                        }
+                    ]
+                }
+            ],
+            order: [['date', 'ASC']]
+        });
+
+        if (movements.length > 0) {
+            // Formatear la respuesta
+            const formattedMovements = movements.map(movement => ({
+                id: movement.id,
+                date: movement.date,
+                type: movement.Category.Type.name,
+                category: movement.Category.name,
+                amount: movement.amount,
+                detail: movement.detail
+            }));
+
+            res.status(200).json(formattedMovements);
+        } else {
+            res.status(404).json({ message: "No movements found for the user." });
+        }
+    } catch (error) {
+        console.error('Error fetching movements:', error);
+        res.status(500).json({ error: 'Error fetching movements.' });
+    }
+};
+
 
 const getMovimientos = async (req, res) => {
     const { user_id, year, month } = req.body;
@@ -237,6 +284,7 @@ const getCategoriasbyTipo = async (req, res) => {
 module.exports = {
     ingresarMovimiento,
     getMovimientos,
+    getMovements,
     getMontoPorCategoriaMovimiento,
     getMontoPorTipoMovimiento,
     editarMovimiento,
