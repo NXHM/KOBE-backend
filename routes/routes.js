@@ -12,6 +12,7 @@ const { editarMovimiento, eliminarMovimiento } = require('../controllers/Movimie
 const { getPresupuesto, getPresupuestoAgrupadoPorTipo,getPresupuestoPorCategoria, getPresupuestoPorTipo, createBudget, updateBudget} = require('../controllers/Presupuesto');
 const { validarToken } = require('../config/Middleware');
 const { getDiasXMes, getAllMonths } = require('../controllers/Mes');
+const { getMovimientosYPresupuestosPorCategoria } = require('../controllers/MovimientoPresupuesto');
 
 //-----------Definir rutas-----------
 // User
@@ -34,7 +35,7 @@ router.put('/updatecategoria/:id', validarToken,updateCategoria);
 router.delete('/deletecategoria/:id', validarToken, deleteCategoria);
 //Movimientos
 router.post('/ingresarMovimiento', validarToken, ingresarMovimiento);
-router.post('/movimientos', validarToken, getMovimientos);
+router.post('/movimientos',  getMovimientos);
 router.post('/movimientos/sumaCategorias', validarToken, getMontoPorCategoriaMovimiento);
 router.post('/movimientos/sumaTipo',validarToken, getMontoPorTipoMovimiento);
 
@@ -50,6 +51,9 @@ router.post('/presupuestos/sumaTipo',validarToken, getPresupuestoPorTipo);
 router.post('/createBudget', createBudget);
 router.put('/updateBudget', updateBudget);
 router.get('/presupuestos/tipo', validarToken,getPresupuestoAgrupadoPorTipo);
+
+/* Presupuestos y Movimientos por categoria */
+router.post('/budgetMovement', validarToken, getMovimientosYPresupuestosPorCategoria)
 
 /* Meses */
 router.get('/dias/:month/:year', validarToken,getDiasXMes);
