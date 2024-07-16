@@ -209,6 +209,31 @@ const eliminarMovimiento = async (req, res) => {
     }
 };
 
+const getCategoriasbyTipo = async (req, res) => {
+    const { id } = req.params;
+
+    const query =`
+    SELECT * FROM "Category"
+    WHERE type_id = $1;
+    `;
+
+  const values = [id];
+
+    try {
+        const { rows } = await connection.query(query, values);
+        if (rows.length === 0) {
+            return res.status(404).json({ error: "No se encontraron categorías para el tipo proporcionado" });
+        }
+        res.status(200).json(rows);
+    } catch (error) {
+        console.error("Error al obtener categorías:", error);
+        res.status(500).json({
+            error: "Hubo un problema al obtener las categorías",
+        });
+    }
+
+}
+
 module.exports = {
     ingresarMovimiento,
     getMovimientos,
@@ -216,4 +241,5 @@ module.exports = {
     getMontoPorTipoMovimiento,
     editarMovimiento,
     eliminarMovimiento,
+    getCategoriasbyTipo
 };

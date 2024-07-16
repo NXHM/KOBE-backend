@@ -4,7 +4,7 @@ const router     = express.Router();
 //Importar consultas
 const { getTipo  } = require('../controllers/Tipo');
 const { getCategoria,updateCategoria,deleteCategoria, createCategoria  } = require('../controllers/Categoria');
-const { ingresarMovimiento, getMovimientos, getMontoPorCategoriaMovimiento, getMontoPorTipoMovimiento  } = require('../controllers/Movimiento');
+const { ingresarMovimiento, getMovimientos, getMontoPorCategoriaMovimiento, getMontoPorTipoMovimiento, getCategoriasbyTipo  } = require('../controllers/Movimiento');
 const { createUser, loginUser, loginUserWithCookies, logoutUser, getUserData } = require('../controllers/userController');
 const { changePassword,validateVerificationCode, sendVerificationCode} = require('../controllers/userController');
 const { changeEmail, changePasswd } = require('../controllers/userController');
@@ -41,6 +41,7 @@ router.post('/movimientos/sumaTipo',validarToken, getMontoPorTipoMovimiento);
 //Historial
 router.put('/editmovimiento/:id', validarToken, editarMovimiento);
 router.delete('/deletemovimiento/:id', eliminarMovimiento);
+router.get('/categoriasTipo/:id', getCategoriasbyTipo);
 
 /* Presupuestos */
 router.get('/presupuestos', validarToken,getPresupuesto);
