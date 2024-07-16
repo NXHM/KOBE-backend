@@ -28,8 +28,8 @@ router.post('/changePasswd', changePasswd);
 router.post('/changeEmail', changeEmail);
 
 //Tipo
-router.get('/tipo', validarToken, getTipo);
-router.get('/categoria', validarToken, getCategoria);
+router.get('/tipo', getTipo);
+router.get('/categoria', getCategoria);
 router.post('/createCategoria', validarToken, createCategoria)
 router.put('/updatecategoria/:id', validarToken,updateCategoria);
 router.delete('/deletecategoria/:id', validarToken, deleteCategoria);
