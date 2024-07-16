@@ -29,7 +29,7 @@ const createBudget = async (req, res) => {
 };
 
 const getPresupuesto = async (req, res) => {
-    const { month_id, user_id} = req.body;
+    const { month_id, user_id } = req.body;
 
     try {
         let budgets = await Budget.findAll({
@@ -42,27 +42,87 @@ const getPresupuesto = async (req, res) => {
                 },
             },
             include: [
-                {model: Category,
-                    attributes: [
-                        'name'
-                    ],
+                {
+                    model: Category,
+                    attributes: ['name'],
                 }
             ],
-        })
+        });
 
-        if(budgets) {
+        if (budgets.length > 0) {
             res.send(budgets);
         } else {
-            res.status(404).json({message: "No existe presupuesto para el mes ingresado."})
+            res.status(404).json({ message: "No existe presupuesto para el mes ingresado." });
         }
     } catch (error) {
         console.error("Error al buscar presupuestos: ", error);
-        res.status(500).json({error: "Error al buscar presupuestos."})
+        res.status(500).json({ error: "Error al buscar presupuestos." });
     }
-}
+};
+
+const getPresupuestoAgrupadoPorTipo = async (req, res) => {
+    const { user_id, month_id } = req.body;
+
+    try {
+        let budgets = await Budget.findAll({
+            where: {
+                user_id: {
+                    [Op.eq]: user_id
+                },
+                month_id: {
+                    [Op.eq]: month_id
+                },
+            },
+            include: [
+                {
+                    model: Category,
+                    attributes: ['id', 'name', 'type_id'],
+                    include: [
+                        {
+                            model: Type,
+                            attributes: ['id', 'name']
+                        }
+                    ]
+                }
+            ],
+        });
+
+        if (budgets.length > 0) {
+            // Agrupar los presupuestos por tipo
+            let groupedBudgets = budgets.reduce((result, budget) => {
+                const type = budget.Category.Type;
+                if (!result[type.id]) {
+                    result[type.id] = {
+                        type: type.name,
+                        budgets: []
+                    };
+                }
+                result[type.id].budgets.push({
+                    id: budget.id,
+                    amount: budget.amount,
+                    year: budget.year,
+                    month_id: budget.month_id,
+                    category_id: budget.category_id,
+                    category_name: budget.Category.name,
+                });
+                return result;
+            }, {});
+
+            // Convertir el objeto en un array
+            let response = Object.values(groupedBudgets);
+
+            res.send(response);
+        } else {
+            res.status(404).json({ message: "No existen presupuestos para el mes ingresado." });
+        }
+    } catch (error) {
+        console.error("Error al buscar presupuestos agrupados por tipo: ", error);
+        res.status(500).json({ error: "Error al buscar presupuestos agrupados por tipo." });
+    }
+};
 
 const getPresupuestoPorCategoria = async (req, res) => {
-    const { user_id, month_id} = req.body;
+    const { user_id, month_id } = req.body;
 
     try {
         let budgets = await Budget.findAll({
@@ -80,25 +140,27 @@ const getPresupuestoPorCategoria = async (req, res) => {
                 },
             },
             include: [
-                {model: Category,
+                {
+                    model: Category,
                     attributes: [],
                 }
             ],
-        })
+        });
 
-        if(budgets) {
+        if (budgets.length > 0) {
             res.send(budgets);
         } else {
-            res.status(404).json({message: "No existe presupuesto para el mes ingresado."})
+            res.status(404).json({ message: "No existe presupuesto para el mes ingresado." });
         }
     } catch (error) {
-        console.error("Error al buscar presupuestos: ", error);
-        res.status(500).json({error: "Error al buscar presupuestos."})
+        console.error("Error al buscar presupuestos por categoría: ", error);
+        res.status(500).json({ error: "Error al buscar presupuestos por categoría." });
     }
-}
+};
+
 
 const getPresupuestoPorTipo = async (req, res) => {
-    const { user_id, month_id, year_id } = req.body;
+    const { user_id, month_id } = req.body;
 
     try {
         let budgets = await Budget.findAll({
@@ -116,26 +178,31 @@ const getPresupuestoPorTipo = async (req, res) => {
                 },
             },
             include: [
-                {model: Category,
+                {
+                    model: Category,
                     attributes: [],
-                    include: [{model: Type,
-                        attributes: [],
-                    }],
+                    include: [
+                        {
+                            model: Type,
+                            attributes: [],
+                        }
+                    ],
                 }
             ],
             group: ['Category.type_id', 'Category.Type.name'],
-        })
+        });
 
-        if(budgets) {
+        if (budgets.length > 0) {
             res.send(budgets);
         } else {
-            res.status(404).json({message: "No existe presupuesto para el mes ingresado."})
+            res.status(404).json({ message: "No existe presupuesto para el mes ingresado." });
         }
     } catch (error) {
-        console.error("Error al buscar presupuestos: ", error);
-        res.status(500).json({error: "Error al buscar presupuestos."})
+        console.error("Error al buscar presupuestos por tipo: ", error);
+        res.status(500).json({ error: "Error al buscar presupuestos por tipo." });
     }
-}
+};
+
 
 const updateBudget = async (req, res) => {
     const { id } = req.params;
@@ -171,5 +238,6 @@ module.exports = {
     getPresupuestoPorCategoria,
     getPresupuestoPorTipo,
     createBudget,
-    updateBudget
+    updateBudget,
+    getPresupuestoAgrupadoPorTipo
 }

@@ -21,21 +21,19 @@ const getDiasXMes = async (req, res) => {
     }
 }
 
-const getMeses = async (req, res) => {
-    try {
-        const months = await Month.findAll();
-        if (months) {
-            res.send(months);
-        } else {
-            res.status(404).json({message: "No existen meses."});
-        }
-    } catch (error) {
-        console.error("Error al buscar meses: ", error);
-        res.status(500).json({ error: "Error al buscar meses." });
-    }
+
+const getAllMonths = async (req, res) => {
+  try {
+    const months = await Month.findAll();
+    res.status(200).json(months);
+  } catch (error) {
+    console.error('Database query error:', error);
+    res.status(500).json({ error: 'Error fetching data' });
+  }
 }
+
 
 module.exports = {
     getDiasXMes,
-    getMeses,
+    getAllMonths
 }
