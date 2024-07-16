@@ -84,7 +84,7 @@ const getPresupuesto = async (req, res) => {
 };
 
 const getPresupuestoAgrupadoPorTipo = async (req, res) => {
-    const { month_id } = req.body;
+    const { month_id } = req.query; // Obtener el parámetro de consulta
     const user_id = req.id;
 
     try {
