@@ -12,6 +12,22 @@ module.exports = (sequelize, DataTypes) => {
                 type: DataTypes.STRING,
                 allowNull: false,
                 unique: true,
+            },
+            type_id: {  // Añadir el campo type_id
+                type: DataTypes.INTEGER,
+                allowNull: false,
+                references: {
+                    model: 'Type', // name of the target model
+                    key: 'id', // key in the target model that we're referencing
+                }
+            },
+            user_id: {  // Añadir el campo user_id
+                type: DataTypes.INTEGER,
+                allowNull: false,
+                references: {
+                    model: 'User', // name of the target model
+                    key: 'id', // key in the target model that we're referencing
+                }
             }
         },
         {
