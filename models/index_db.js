@@ -31,3 +31,4 @@ db.Tracker.belongsTo(db.Type, { foreignKey: 'type_id' });
 db.Tracker.belongsTo(db.Category, { foreignKey: 'category_id' });
 
 module.exports = db;
+

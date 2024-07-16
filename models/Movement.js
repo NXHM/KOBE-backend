@@ -1,6 +1,6 @@
 module.exports = (sequelize, DataTypes) => {
-    const Category = sequelize.define(
-        'Category',
+    const Movement = sequelize.define(
+        'Movement',
         {
             id: {
                 allowNull: false,
@@ -8,11 +8,18 @@ module.exports = (sequelize, DataTypes) => {
                 primaryKey: true,
                 type: DataTypes.INTEGER,
             },
-            name: {
-                type: DataTypes.STRING,
+            amount: {
+                type: DataTypes.FLOAT,
                 allowNull: false,
-                unique: true,
-            }
+            },
+            detail: {
+                type: DataTypes.STRING,
+                allowNull: true,
+            },
+            date: {
+                type: DataTypes.DATE,
+                allowNull: false,
+            },
         },
         {
             freezeTableName: true,
@@ -20,6 +27,6 @@ module.exports = (sequelize, DataTypes) => {
             underscored: true,
         }
     );
-    
-    return Category;
+
+    return Movement;
 };

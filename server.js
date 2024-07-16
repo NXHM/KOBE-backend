@@ -1,27 +1,20 @@
-const express = require('express');
-const serverConfig = require('./config/server-config');
-const routes = require('./routes/routes');
-const { sequelize } = require('./models'); // Importar la instancia de sequelize desde models.js
-
-//Cargar variables de entorno
-const dotenv = require('dotenv');
-dotenv.config({ path: './env/.env'});
-
-const server = () => {
-    const app = express();
-    // Usa la configuración seteada en serverConfig
-    app.use(serverConfig);
-    // Usa las rutas definidas en la carpeta routes
-    // y agrega el prefijo /api
-    app.use("/api", routes);
-    return app;
-};
-
-const app = server();
+const app = require('./config/server-config');
+const db = require('./models/db');
+const router = require('./routes/routes');
 const port = 3000;
 
-app.listen(port, () => {
-    console.log(`Servidor en ejecución en el puerto ${port}`);
+// Con force: true se elimina la db y las tablas, se crae toda la base de datos de nuevo
+db.sequelize.sync({ force: false }) 
+  .then(() => {
+    // Crear tablas si no existen
+    console.log('Database & tables created!');
 });
 
-module.exports = server;
+// Escucha en el puerto 3000
+app.listen(port, () => {
+  console.log(`Servidor en ejecución en el puerto ${port}`);
+});
+
+// Usa las rutas definidas en la carpeta routes
+// y agrega el prefijo /api
+app.use("/api", router);

@@ -7,15 +7,16 @@ function validateUsername(req) {
     if (username.length < 3 || username.length > 20) {
         return "Username must be between 3 and 20 characters.";
     }
-    if (!/\s/.test(username)) {
+    if (/\s/.test(username)) {
         return "Username must not contain spaces.";
     }
-    if (!/[^a-zA-Z0-9]/.test(username)) {
+    if (/[^a-zA-Z0-9]/.test(username)) {
         return "Username must not contain special characters.";
     }
-    return "Username is valid.";
+    //"Username is valid."
+    return null;
 }
-function  validatePassword(req) {
+function validatePassword(req) {
     
     const password = req.body.password;
     const confirmPassword = req.body.confirmPassword;
@@ -48,16 +49,23 @@ function  validatePassword(req) {
     if (!/[!@#$%^&*]/.test(password)) {
         return "Password must contain at least one special character.";
     }
-    return "Password is valid.";
+    //return "Password is valid.";
+    return null;
 }
 
 // Ve si el email es uno existente
-function validateEmail(email){
+function validateEmail(req){
     // Validación de correo electrónico
     // (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email))
-    if (!/^[^\s@]+@(hotmail\.com|gmail\.com|yahoo\.com|outlook\.com)$/.test(email)) {
+    if (!/^[^\s@]+@(hotmail\.com|gmail\.com|yahoo\.com|outlook\.com)$/.test(req.body.email)) {
         return "Invalid email address.";
     }
-    return "Email is valid.";
+    //return "Email is valid.";
+    return null;
 }
 
+module.exports={
+    validateUsername,
+    validatePassword,
+    validateEmail
+}

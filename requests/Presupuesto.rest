@@ -1,0 +1,28 @@
+#########################################
+POST http://localhost:3000/api/presupuestos
+Content-Type: application/json
+
+{
+    "user_id": 1,
+    "month_id": 1,
+    "year_id": 1
+}
+#########################################
+POST http://localhost:3000/api/presupuestos/sumaCategoria
+Content-Type: application/json
+
+{
+    "user_id": 1,
+    "month_id": 1,
+    "year_id": 1
+}
+#########################################
+POST http://localhost:3000/api/presupuestos/sumaTipo
+Content-Type: application/json
+
+{
+    "user_id": 1,
+    "month_id": 1,
+    "year_id": 1
+}
+#########################################

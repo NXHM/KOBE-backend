@@ -1,18 +1,21 @@
 module.exports = (sequelize, DataTypes) => {
-  const Month = sequelize.define(
-      'Month',
+  const Budget = sequelize.define(
+      'Budget',
       {
           id: {
               allowNull: false,
-              primaryKey: true,
               autoIncrement: true,
+              primaryKey: true,
               type: DataTypes.INTEGER,
           },
-          name: {
-              type: DataTypes.STRING,
+          amount: {
+              type: DataTypes.DOUBLE,
               allowNull: false,
-              unique: true,
-          }
+          },
+          year: {
+              type: DataTypes.INTEGER,
+              allowNull: false,
+          },
       },
       {
           freezeTableName: true,
@@ -20,6 +23,6 @@ module.exports = (sequelize, DataTypes) => {
           underscored: true,
       }
   );
-
-  return Month;
+  
+  return Budget;
 };
