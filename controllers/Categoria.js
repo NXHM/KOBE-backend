@@ -12,6 +12,7 @@ const getCategoria = async (req, res) => {
     }
 };
 
+
 module.exports = {
     getCategoria,
 };
