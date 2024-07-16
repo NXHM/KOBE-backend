@@ -7,26 +7,49 @@ const Category = db.Category;
 const Type = db.Type;
 
 const createBudget = async (req, res) => {
-    const { amount, year, user_id, category_id, month_id } = req.body;
+    const { amount, year, month_id, category_name, type_id } = req.body;
+    const user_id = req.id; // Extraer user_id del middleware
 
     try {
+        // Verificar si la categoría ya existe
+        let category = await Category.findOne({
+            where: {
+                name: category_name,
+                user_id: user_id,
+                type_id: type_id
+            }
+        });
+
+        // Si no existe, crear la categoría
+        if (!category) {
+            category = await Category.create({
+                name: category_name,
+                type_id: type_id,
+                user_id: user_id
+            });
+        }
+
+        // Crear el presupuesto asociado a la categoría
         const newBudget = await Budget.create({
             amount,
             year,
             user_id,
-            category_id,
+            category_id: category.id,
             month_id
         });
 
         return res.status(201).json({
             message: "Budget created successfully",
-            budget: newBudget
+            budget: newBudget,
+            category: category
         });
     } catch (error) {
         console.error('Error creating budget:', error);
         return res.status(500).json({ error: 'Error creating budget' });
     }
 };
+
+
 
 const getPresupuesto = async (req, res) => {
     const { month_id, user_id } = req.body;
@@ -61,7 +84,8 @@ const getPresupuesto = async (req, res) => {
 };
 
 const getPresupuestoAgrupadoPorTipo = async (req, res) => {
-    const { user_id, month_id } = req.body;
+    const { month_id } = req.body;
+    const user_id = req.id;
 
     try {
         let budgets = await Budget.findAll({
@@ -160,14 +184,19 @@ const getPresupuestoPorCategoria = async (req, res) => {
 
 
 const getPresupuestoPorTipo = async (req, res) => {
-    const { user_id, month_id } = req.body;
-
+    const { month_id, year } = req.body;
+    const user_id = req.id;
     try {
         let budgets = await Budget.findAll({
             attributes: [
+                'id',
+                'amount',
+                'year',
+                'month_id',
+                [Sequelize.col('Category.id'), 'category_id'],
+                [Sequelize.col('Category.name'), 'category_name'],
                 [Sequelize.col('Category.type_id'), 'type_id'],
-                [Sequelize.col('Category.Type.name'), 'type_name'],
-                [Sequelize.fn('SUM', Sequelize.col('amount')), 'total_amount']
+                [Sequelize.col('Category.Type.name'), 'type_name']
             ],
             where: {
                 user_id: {
@@ -176,6 +205,9 @@ const getPresupuestoPorTipo = async (req, res) => {
                 month_id: {
                     [Op.eq]: month_id
                 },
+                year: {
+                    [Op.eq]: year
+                }
             },
             include: [
                 {
@@ -184,24 +216,25 @@ const getPresupuestoPorTipo = async (req, res) => {
                     include: [
                         {
                             model: Type,
-                            attributes: [],
+                            attributes: []
                         }
-                    ],
+                    ]
                 }
             ],
-            group: ['Category.type_id', 'Category.Type.name'],
+            order: [['Category', 'type_id', 'ASC']] // Ordenar por type_id para mantener los presupuestos agrupados por tipo
         });
 
         if (budgets.length > 0) {
             res.send(budgets);
         } else {
-            res.status(404).json({ message: "No existe presupuesto para el mes ingresado." });
+            res.status(404).json({ message: "No existe presupuesto para el mes y año ingresados." });
         }
     } catch (error) {
         console.error("Error al buscar presupuestos por tipo: ", error);
         res.status(500).json({ error: "Error al buscar presupuestos por tipo." });
     }
 };
+
 
 
 const updateBudget = async (req, res) => {

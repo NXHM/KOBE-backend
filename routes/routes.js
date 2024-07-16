@@ -4,7 +4,7 @@ const router     = express.Router();
 //Importar consultas
 const { getTipo  } = require('../controllers/Tipo');
 const { getCategoria,updateCategoria,deleteCategoria, createCategoria  } = require('../controllers/Categoria');
-const { ingresarMovimiento, getMovimientos, getMontoPorCategoriaMovimiento, getMontoPorTipoMovimiento, getCategoriasbyTipo  } = require('../controllers/Movimiento');
+const { ingresarMovimiento, getMovimientos, getMontoPorCategoriaMovimiento, getMontoPorTipoMovimiento, getCategoriasbyTipo, getMovements  } = require('../controllers/Movimiento');
 const { createUser, loginUser, loginUserWithCookies, logoutUser, getUserData } = require('../controllers/userController');
 const { changePassword,validateVerificationCode, sendVerificationCode} = require('../controllers/userController');
 const { changeEmail, changePasswd } = require('../controllers/userController');
@@ -35,21 +35,22 @@ router.put('/updatecategoria/:id', validarToken,updateCategoria);
 router.delete('/deletecategoria/:id', validarToken, deleteCategoria);
 //Movimientos
 router.post('/ingresarMovimiento', validarToken, ingresarMovimiento);
-router.post('/movimientos',  getMovimientos);
+router.post('/movimientos', validarToken, getMovimientos);
+router.post('/movimientos2', validarToken, getMovements);
 router.post('/movimientos/sumaCategorias', validarToken, getMontoPorCategoriaMovimiento);
 router.post('/movimientos/sumaTipo',validarToken, getMontoPorTipoMovimiento);
 
 //Historial
 router.put('/editmovimiento/:id', validarToken, editarMovimiento);
-router.delete('/deletemovimiento/:id', eliminarMovimiento);
-router.get('/categoriasTipo/:id', getCategoriasbyTipo);
+router.delete('/deletemovimiento/:id', validarToken, eliminarMovimiento);
+router.get('/categoriasTipo/:id', validarToken, getCategoriasbyTipo);
 
 /* Presupuestos */
 router.get('/presupuestos', validarToken,getPresupuesto);
 router.post('/presupuestos/sumaCategoria', validarToken,getPresupuestoPorCategoria);
 router.post('/presupuestos/sumaTipo',validarToken, getPresupuestoPorTipo);
-router.post('/createBudget', createBudget);
-router.put('/updateBudget', updateBudget);
+router.post('/createBudget', validarToken, createBudget);
+router.put('/updateBudget', validarToken, updateBudget);
 router.get('/presupuestos/tipo', validarToken,getPresupuestoAgrupadoPorTipo);
 
 /* Presupuestos y Movimientos por categoria */
