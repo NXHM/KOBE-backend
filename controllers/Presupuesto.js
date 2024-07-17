@@ -84,7 +84,7 @@ const getPresupuesto = async (req, res) => {
 };
 
 const getPresupuestoAgrupadoPorTipo = async (req, res) => {
-    const { month_id } = req.query; // Obtener el parámetro de consulta
+    const { month_id, year } = req.query; // Obtener los parámetros de consulta
     const user_id = req.id;
 
     try {
@@ -96,6 +96,9 @@ const getPresupuestoAgrupadoPorTipo = async (req, res) => {
                 month_id: {
                     [Op.eq]: month_id
                 },
+                year: {
+                    [Op.eq]: year
+                }
             },
             include: [
                 {
@@ -137,13 +140,14 @@ const getPresupuestoAgrupadoPorTipo = async (req, res) => {
 
             res.send(response);
         } else {
-            res.status(404).json({ message: "No existen presupuestos para el mes ingresado." });
+            res.status(404).json({ message: "No existen presupuestos para el mes y año ingresado." });
         }
     } catch (error) {
         console.error("Error al buscar presupuestos agrupados por tipo: ", error);
         res.status(500).json({ error: "Error al buscar presupuestos agrupados por tipo." });
     }
 };
+
 
 const getPresupuestoPorCategoria = async (req, res) => {
     const { user_id, month_id } = req.body;
