@@ -29,7 +29,7 @@ const createBudget = async (req, res) => {
             });
         }
 
-        // Crear el presupuesto asociado a la categoría
+        // Crear el presupuesto asociado a la categoría para el mes y año especificado
         const newBudget = await Budget.create({
             amount,
             year,
@@ -37,6 +37,37 @@ const createBudget = async (req, res) => {
             category_id: category.id,
             month_id
         });
+
+        // Crear presupuestos adicionales con monto 0 para los años 2024 a 2026
+        const startYear = 2024;
+        const endYear = 2026;
+
+        for (let y = startYear; y <= endYear; y++) {
+            for (let m = 1; m <= 12; m++) {
+                // Saltar el presupuesto ya creado con el monto especificado
+                if (y === year && m === month_id) continue;
+
+                // Verificar si ya existe un presupuesto para esa combinación de year y month_id
+                const existingBudget = await Budget.findOne({
+                    where: {
+                        year: y,
+                        month_id: m,
+                        user_id: user_id,
+                        category_id: category.id
+                    }
+                });
+
+                if (!existingBudget) {
+                    await Budget.create({
+                        amount: 0,
+                        year: y,
+                        user_id: user_id,
+                        category_id: category.id,
+                        month_id: m
+                    });
+                }
+            }
+        }
 
         return res.status(201).json({
             message: "Budget created successfully",
@@ -48,6 +79,7 @@ const createBudget = async (req, res) => {
         return res.status(500).json({ error: 'Error creating budget' });
     }
 };
+
 
 
 
