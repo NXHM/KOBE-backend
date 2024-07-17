@@ -3,17 +3,60 @@ const { Op } = require('sequelize');
 const db = require("../models/db");
 
 const getCategoria = async (req, res) => {
-    const user_id = req.id;
+    const { user_id } = req.body;
+
     try {
-        console.log(connection.options)
-        const response = await connection.query('SELECT * FROM "Category";');
-        res.status(200).json(response.rows);
-        console.log("Se imprimieron categorias")
+        const categorias = await Category.findAll({
+            where: {
+                user_id: {
+                    [Op.eq]: user_id,
+                },
+            },
+            include: [{ model: Type }],
+        });
+
+        if (categorias.length > 0) {
+            // Agrupar categorías por tipo
+            const groupedByType = categorias.reduce((acc, categoria) => {
+                const type = categoria.Type.name;
+                if (!acc[type]) {
+                    acc[type] = [];
+                }
+                acc[type].push(categoria);
+                return acc;
+            }, {});
+
+            res.status(200).json(groupedByType);
+        } else {
+            res.status(404).json({ message: "No existen categorías." });
+        }
     } catch (error) {
-        console.error('Database query error:', error);
-        res.status(500).json({ error: 'Error fetching data' });
+        console.error("Error al buscar categorías: ", error);
+        res.status(500).json({ error: "Error al buscar categorías." });
     }
 };
+
+const getCategoriaConTipos = async (req, res) => {
+    const user_id = req.id;
+    try {
+  
+      const types = await Type.findAll({
+        include: [
+          {
+            model: Category,
+            where: {
+              user_id: user_id
+            }
+          }
+        ]
+      });
+  
+      res.json(types);
+    } catch (error) {
+      console.error('Error:', error);
+      res.status(500).json({ error: 'Internal server error' });
+    }
+  };
 
 const createCategoria = async (req, res) => {
     const { name, type_id, user_id } = req.body;
@@ -117,9 +160,11 @@ const deleteCategoria = async (req, res) => {
     }
 };
 
+
 module.exports = {
     getCategoria,
     createCategoria,
     updateCategoria,
-    deleteCategoria
+    deleteCategoria,
+    getCategoriaConTipos
 };

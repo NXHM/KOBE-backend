@@ -3,8 +3,8 @@ const router     = express.Router();
 
 //Importar consultas
 const { getTipo  } = require('../controllers/Tipo');
-const { getCategoria,updateCategoria,deleteCategoria, createCategoria  } = require('../controllers/Categoria');
-const { ingresarMovimiento, getMovimientos, getMontoPorCategoriaMovimiento, getMontoPorTipoMovimiento, getCategoriasbyTipo, getMovements  } = require('../controllers/Movimiento');
+const { getCategoria,updateCategoria,deleteCategoria, createCategoria, getCategoriaConTipos  } = require('../controllers/Categoria');
+const { ingresarMovimiento, getMovimientos, getMontoPorCategoriaMovimiento, getMontoPorTipoMovimiento, getMovements  } = require('../controllers/Movimiento');
 const { createUser, loginUser, loginUserWithCookies, logoutUser, getUserData } = require('../controllers/userController');
 const { changePassword,validateVerificationCode, sendVerificationCode} = require('../controllers/userController');
 const { changeEmail, changePasswd } = require('../controllers/userController');
@@ -33,6 +33,7 @@ router.get('/categoria', getCategoria);
 router.post('/createCategoria', validarToken, createCategoria)
 router.put('/updatecategoria/:id', validarToken,updateCategoria);
 router.delete('/deletecategoria/:id', validarToken, deleteCategoria);
+router.get('/categoriasTipo', validarToken, getCategoriaConTipos);
 //Movimientos
 router.post('/ingresarMovimiento', ingresarMovimiento);
 router.post('/movimientos', validarToken, getMovimientos);
@@ -43,7 +44,7 @@ router.post('/movimientos/sumaTipo',validarToken, getMontoPorTipoMovimiento);
 //Historial
 router.put('/editmovimiento/:id', validarToken, editarMovimiento);
 router.delete('/deletemovimiento/:id', validarToken, eliminarMovimiento);
-router.get('/categoriasTipo/:id', validarToken, getCategoriasbyTipo);
+
 
 /* Presupuestos */
 router.get('/presupuestos', validarToken,getPresupuesto);
