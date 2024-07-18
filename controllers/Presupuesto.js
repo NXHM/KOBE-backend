@@ -84,17 +84,16 @@ const createBudget = async (req, res) => {
 
 
 const getPresupuesto = async (req, res) => {
-    const { month_id, user_id } = req.body;
+    const { category_id, month_id, year } = req.query;
+    const user_id = req.id; // Obtener el user_id desde req.id
 
     try {
-        let budgets = await Budget.findAll({
+        let budget = await Budget.findOne({
             where: {
-                month_id: {
-                    [Op.eq]: month_id,
-                },
-                user_id: {
-                    [Op.eq]: user_id,
-                },
+                category_id: category_id,
+                month_id: month_id,
+                year: year,
+                user_id: user_id,
             },
             include: [
                 {
@@ -104,14 +103,14 @@ const getPresupuesto = async (req, res) => {
             ],
         });
 
-        if (budgets.length > 0) {
-            res.send(budgets);
+        if (budget) {
+            res.send(budget);
         } else {
-            res.status(404).json({ message: "No existe presupuesto para el mes ingresado." });
+            res.status(404).json({ message: "No existe presupuesto para los parámetros ingresados." });
         }
     } catch (error) {
-        console.error("Error al buscar presupuestos: ", error);
-        res.status(500).json({ error: "Error al buscar presupuestos." });
+        console.error("Error al buscar presupuesto: ", error);
+        res.status(500).json({ error: "Error al buscar presupuesto." });
     }
 };
 
@@ -274,31 +273,33 @@ const getPresupuestoPorTipo = async (req, res) => {
 
 
 const updateBudget = async (req, res) => {
-    const { id } = req.params;
-    const { amount, year, user_id, category_id, month_id } = req.body;
+    const { id, amount } = req.body;
+    const user_id = req.id; // Obtener el user_id desde req.id
+
+    if (!id || amount === undefined) {
+        return res.status(400).json({ error: "Parámetros incompletos." });
+    }
 
     try {
-        const budget = await Budget.findByPk(id);
+        const [updated] = await Budget.update(
+            { amount },
+            {
+                where: {
+                    id: id,
+                    user_id: user_id,
+                },
+            }
+        );
 
-        if (!budget) {
-            return res.status(404).json({ error: 'Budget not found' });
+        if (updated) {
+            const updatedBudget = await Budget.findOne({ where: { id: id } });
+            res.status(200).json(updatedBudget);
+        } else {
+            res.status(404).json({ error: "Presupuesto no encontrado." });
         }
-
-        budget.amount = amount;
-        budget.year = year;
-        budget.user_id = user_id;
-        budget.category_id = category_id;
-        budget.month_id = month_id;
-
-        await budget.save();
-
-        return res.status(200).json({
-            message: "Budget updated successfully",
-            budget: budget
-        });
     } catch (error) {
-        console.error('Error updating budget:', error);
-        return res.status(500).json({ error: 'Error updating budget' });
+        console.error("Error al actualizar el presupuesto: ", error);
+        res.status(500).json({ error: "Error al actualizar el presupuesto." });
     }
 };
 

@@ -36,6 +36,38 @@ const getCategoria = async (req, res) => {
     }
 };
 
+const getCategoriaById = async (req, res) => {
+    const { category_id } = req.params;
+    const user_id = req.id;
+
+    try {
+        const category = await Category.findOne({
+            where: {
+                id: category_id,
+                user_id: user_id
+            },
+            include: [{
+                model: Type,
+                attributes: ['id', 'name']
+            }]
+        });
+
+        if (!category) {
+            return res.status(404).json({ message: 'Categoría no encontrada' });
+        }
+
+        res.status(200).json({
+            id: category.id,
+            name: category.name,
+            type_id: category.type_id,
+            type_name: category.Type.name
+        });
+    } catch (error) {
+        console.error('Error al obtener la categoría:', error);
+        res.status(500).json({ error: 'Error al obtener la categoría' });
+    }
+};
+
 const getCategoriaConTipos = async (req, res) => {
     const user_id = req.id;
     try {
@@ -166,5 +198,6 @@ module.exports = {
     createCategoria,
     updateCategoria,
     deleteCategoria,
-    getCategoriaConTipos
+    getCategoriaConTipos,
+    getCategoriaById
 };
