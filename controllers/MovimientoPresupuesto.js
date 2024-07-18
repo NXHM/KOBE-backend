@@ -90,17 +90,18 @@ const getMovimientosYPresupuestosPorCategoria = async (req, res) => {
                 real: movimiento ? parseFloat(movimiento) : 0,
                 planeado: parseFloat(presupuesto.dataValues.amount)
             };
-            
-            switch (presupuesto.dataValues.type_id) {
-                case 1:
-                    result.ingresos.push(categoryData);
-                    break;
-                case 2:
-                    result.gastos.push(categoryData);
-                    break;
-                case 3:
-                    result.ahorros.push(categoryData);
-                    break;
+            if (categoryData.planeado > 0) {
+                switch (presupuesto.dataValues.type_id ) {
+                    case 1:
+                        result.ingresos.push(categoryData);
+                        break;
+                    case 2:
+                        result.gastos.push(categoryData);
+                        break;
+                    case 3:
+                        result.ahorros.push(categoryData);
+                        break;
+                }
             }
         });
 

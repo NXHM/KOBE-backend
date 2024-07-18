@@ -7,73 +7,73 @@ INSERT INTO "Category" (name, type_id, user_id) VALUES
 
 INSERT INTO "Budget" (amount, year, user_id, category_id, month_id) VALUES
 /* enero */
-(1000, 2024, 3, (SELECT id FROM "Category" WHERE name = 'Sueldo'), (SELECT id FROM "Month" WHERE name = 'January')),
-(100, 2024, 3, (SELECT id FROM "Category" WHERE name = 'Comida'), (SELECT id FROM "Month" WHERE name = 'January')),
-(150, 2024, 3, (SELECT id FROM "Category" WHERE name = 'Transporte'), (SELECT id FROM "Month" WHERE name = 'January')),
+(1000, 2024, 3, (SELECT id FROM "Category" WHERE name = 'Sueldo'), (SELECT id FROM "Month" WHERE name = 'Enero')),
+(100, 2024, 3, (SELECT id FROM "Category" WHERE name = 'Comida'), (SELECT id FROM "Month" WHERE name = 'Enero')),
+(150, 2024, 3, (SELECT id FROM "Category" WHERE name = 'Transporte'), (SELECT id FROM "Month" WHERE name = 'Enero')),
 
 /* febrero */
-(1000, 2024, 3, (SELECT id FROM "Category" WHERE name = 'Sueldo'), (SELECT id FROM "Month" WHERE name = 'February')),
-(100, 2024, 3, (SELECT id FROM "Category" WHERE name = 'Comida'), (SELECT id FROM "Month" WHERE name = 'February')),
-(150, 2024, 3, (SELECT id FROM "Category" WHERE name = 'Transporte'), (SELECT id FROM "Month" WHERE name = 'February')),
+(1000, 2024, 3, (SELECT id FROM "Category" WHERE name = 'Sueldo'), (SELECT id FROM "Month" WHERE name = 'Febrero')),
+(100, 2024, 3, (SELECT id FROM "Category" WHERE name = 'Comida'), (SELECT id FROM "Month" WHERE name = 'Febrero')),
+(150, 2024, 3, (SELECT id FROM "Category" WHERE name = 'Transporte'), (SELECT id FROM "Month" WHERE name = 'Febrero')),
 
 /* marzo */
-(1000, 2024, 3, (SELECT id FROM "Category" WHERE name = 'Sueldo'), (SELECT id FROM "Month" WHERE name = 'March')),
-(100, 2024, 3, (SELECT id FROM "Category" WHERE name = 'Comida'), (SELECT id FROM "Month" WHERE name = 'March')),
-(150, 2024, 3, (SELECT id FROM "Category" WHERE name = 'Transporte'), (SELECT id FROM "Month" WHERE name = 'March')),
+(1000, 2024, 3, (SELECT id FROM "Category" WHERE name = 'Sueldo'), (SELECT id FROM "Month" WHERE name = 'Marzo')),
+(100, 2024, 3, (SELECT id FROM "Category" WHERE name = 'Comida'), (SELECT id FROM "Month" WHERE name = 'Marzo')),
+(150, 2024, 3, (SELECT id FROM "Category" WHERE name = 'Transporte'), (SELECT id FROM "Month" WHERE name = 'Marzo')),
 
 /* April */
-(1000, 2024, 3, (SELECT id FROM "Category" WHERE name = 'Sueldo'), (SELECT id FROM "Month" WHERE name = 'April')),
-(250, 2024, 3, (SELECT id FROM "Category" WHERE name = 'Comida'), (SELECT id FROM "Month" WHERE name = 'April')),
-(250, 2024, 3, (SELECT id FROM "Category" WHERE name = 'Transporte'), (SELECT id FROM "Month" WHERE name = 'April')),
-(250, 2024, 3, (SELECT id FROM "Category" WHERE name = 'Auto nuevo'), (SELECT id FROM "Month" WHERE name = 'April')),
+(1000, 2024, 3, (SELECT id FROM "Category" WHERE name = 'Sueldo'), (SELECT id FROM "Month" WHERE name = 'Abril')),
+(250, 2024, 3, (SELECT id FROM "Category" WHERE name = 'Comida'), (SELECT id FROM "Month" WHERE name = 'Abril')),
+(250, 2024, 3, (SELECT id FROM "Category" WHERE name = 'Transporte'), (SELECT id FROM "Month" WHERE name = 'Abril')),
+(250, 2024, 3, (SELECT id FROM "Category" WHERE name = 'Auto nuevo'), (SELECT id FROM "Month" WHERE name = 'Abril')),
 
 /* May */
-(1250, 2024, 3, (SELECT id FROM "Category" WHERE name = 'Sueldo'), (SELECT id FROM "Month" WHERE name = 'May')),
-(250, 2024, 3, (SELECT id FROM "Category" WHERE name = 'Comida'), (SELECT id FROM "Month" WHERE name = 'May')),
-(250, 2024, 3, (SELECT id FROM "Category" WHERE name = 'Transporte'), (SELECT id FROM "Month" WHERE name = 'May')),
-(250, 2024, 3, (SELECT id FROM "Category" WHERE name = 'Auto nuevo'), (SELECT id FROM "Month" WHERE name = 'May')),
+(1250, 2024, 3, (SELECT id FROM "Category" WHERE name = 'Sueldo'), (SELECT id FROM "Month" WHERE name = 'Mayor')),
+(250, 2024, 3, (SELECT id FROM "Category" WHERE name = 'Comida'), (SELECT id FROM "Month" WHERE name = 'Mayor')),
+(250, 2024, 3, (SELECT id FROM "Category" WHERE name = 'Transporte'), (SELECT id FROM "Month" WHERE name = 'Mayor')),
+(250, 2024, 3, (SELECT id FROM "Category" WHERE name = 'Auto nuevo'), (SELECT id FROM "Month" WHERE name = 'Mayor')),
 
 /* June */
-(1250, 2024, 3, (SELECT id FROM "Category" WHERE name = 'Sueldo'), (SELECT id FROM "Month" WHERE name = 'June')),
-(250, 2024, 3, (SELECT id FROM "Category" WHERE name = 'Comida'), (SELECT id FROM "Month" WHERE name = 'June')),
-(250, 2024, 3, (SELECT id FROM "Category" WHERE name = 'Transporte'), (SELECT id FROM "Month" WHERE name = 'June')),
-(250, 2024, 3, (SELECT id FROM "Category" WHERE name = 'Auto nuevo'), (SELECT id FROM "Month" WHERE name = 'June')),
+(1250, 2024, 3, (SELECT id FROM "Category" WHERE name = 'Sueldo'), (SELECT id FROM "Month" WHERE name = 'Junio')),
+(250, 2024, 3, (SELECT id FROM "Category" WHERE name = 'Comida'), (SELECT id FROM "Month" WHERE name = 'Junio')),
+(250, 2024, 3, (SELECT id FROM "Category" WHERE name = 'Transporte'), (SELECT id FROM "Month" WHERE name = 'Junio')),
+(250, 2024, 3, (SELECT id FROM "Category" WHERE name = 'Auto nuevo'), (SELECT id FROM "Month" WHERE name = 'Junio')),
 
 /* July */
-(1250, 2024, 3, (SELECT id FROM "Category" WHERE name = 'Sueldo'), (SELECT id FROM "Month" WHERE name = 'July')),
-(250, 2024, 3, (SELECT id FROM "Category" WHERE name = 'Comida'), (SELECT id FROM "Month" WHERE name = 'July')),
-(250, 2024, 3, (SELECT id FROM "Category" WHERE name = 'Transporte'), (SELECT id FROM "Month" WHERE name = 'July')),
-(250, 2024, 3, (SELECT id FROM "Category" WHERE name = 'Auto nuevo'), (SELECT id FROM "Month" WHERE name = 'July')),
+(1250, 2024, 3, (SELECT id FROM "Category" WHERE name = 'Sueldo'), (SELECT id FROM "Month" WHERE name = 'Julio')),
+(250, 2024, 3, (SELECT id FROM "Category" WHERE name = 'Comida'), (SELECT id FROM "Month" WHERE name = 'Julio')),
+(250, 2024, 3, (SELECT id FROM "Category" WHERE name = 'Transporte'), (SELECT id FROM "Month" WHERE name = 'Julio')),
+(250, 2024, 3, (SELECT id FROM "Category" WHERE name = 'Auto nuevo'), (SELECT id FROM "Month" WHERE name = 'Julio')),
 
 /* August */
-(1250, 2024, 3, (SELECT id FROM "Category" WHERE name = 'Sueldo'), (SELECT id FROM "Month" WHERE name = 'August')),
-(100, 2024, 3, (SELECT id FROM "Category" WHERE name = 'Comida'), (SELECT id FROM "Month" WHERE name = 'August')),
-(150, 2024, 3, (SELECT id FROM "Category" WHERE name = 'Transporte'), (SELECT id FROM "Month" WHERE name = 'August')),
-(150, 2024, 3, (SELECT id FROM "Category" WHERE name = 'Auto nuevo'), (SELECT id FROM "Month" WHERE name = 'August')),
+(1250, 2024, 3, (SELECT id FROM "Category" WHERE name = 'Sueldo'), (SELECT id FROM "Month" WHERE name = 'Agosto')),
+(100, 2024, 3, (SELECT id FROM "Category" WHERE name = 'Comida'), (SELECT id FROM "Month" WHERE name = 'Agosto')),
+(150, 2024, 3, (SELECT id FROM "Category" WHERE name = 'Transporte'), (SELECT id FROM "Month" WHERE name = 'Agosto')),
+(150, 2024, 3, (SELECT id FROM "Category" WHERE name = 'Auto nuevo'), (SELECT id FROM "Month" WHERE name = 'Agosto')),
 
 /* September */
-(1250, 2024, 3, (SELECT id FROM "Category" WHERE name = 'Sueldo'), (SELECT id FROM "Month" WHERE name = 'September')),
-(100, 2024, 3, (SELECT id FROM "Category" WHERE name = 'Comida'), (SELECT id FROM "Month" WHERE name = 'September')),
-(150, 2024, 3, (SELECT id FROM "Category" WHERE name = 'Transporte'), (SELECT id FROM "Month" WHERE name = 'September')),
-(150, 2024, 3, (SELECT id FROM "Category" WHERE name = 'Auto nuevo'), (SELECT id FROM "Month" WHERE name = 'September')),
+(1250, 2024, 3, (SELECT id FROM "Category" WHERE name = 'Sueldo'), (SELECT id FROM "Month" WHERE name = 'Septiembre')),
+(100, 2024, 3, (SELECT id FROM "Category" WHERE name = 'Comida'), (SELECT id FROM "Month" WHERE name = 'Septiembre')),
+(150, 2024, 3, (SELECT id FROM "Category" WHERE name = 'Transporte'), (SELECT id FROM "Month" WHERE name = 'Septiembre')),
+(150, 2024, 3, (SELECT id FROM "Category" WHERE name = 'Auto nuevo'), (SELECT id FROM "Month" WHERE name = 'Septiembre')),
 
 /* October */
-(1250, 2024, 3, (SELECT id FROM "Category" WHERE name = 'Sueldo'), (SELECT id FROM "Month" WHERE name = 'October')),
-(100, 2024, 3, (SELECT id FROM "Category" WHERE name = 'Comida'), (SELECT id FROM "Month" WHERE name = 'October')),
-(150, 2024, 3, (SELECT id FROM "Category" WHERE name = 'Transporte'), (SELECT id FROM "Month" WHERE name = 'October')),
-(150, 2024, 3, (SELECT id FROM "Category" WHERE name = 'Auto nuevo'), (SELECT id FROM "Month" WHERE name = 'October')),
+(1250, 2024, 3, (SELECT id FROM "Category" WHERE name = 'Sueldo'), (SELECT id FROM "Month" WHERE name = 'Octubre')),
+(100, 2024, 3, (SELECT id FROM "Category" WHERE name = 'Comida'), (SELECT id FROM "Month" WHERE name = 'Octubre')),
+(150, 2024, 3, (SELECT id FROM "Category" WHERE name = 'Transporte'), (SELECT id FROM "Month" WHERE name = 'Octubre')),
+(150, 2024, 3, (SELECT id FROM "Category" WHERE name = 'Auto nuevo'), (SELECT id FROM "Month" WHERE name = 'Octubre')),
 
 /* November */
-(1250, 2024, 3, (SELECT id FROM "Category" WHERE name = 'Sueldo'), (SELECT id FROM "Month" WHERE name = 'November')),
-(100, 2024, 3, (SELECT id FROM "Category" WHERE name = 'Comida'), (SELECT id FROM "Month" WHERE name = 'November')),
-(150, 2024, 3, (SELECT id FROM "Category" WHERE name = 'Transporte'), (SELECT id FROM "Month" WHERE name = 'November')),
-(150, 2024, 3, (SELECT id FROM "Category" WHERE name = 'Auto nuevo'), (SELECT id FROM "Month" WHERE name = 'November')),
+(1250, 2024, 3, (SELECT id FROM "Category" WHERE name = 'Sueldo'), (SELECT id FROM "Month" WHERE name = 'Noviembre')),
+(100, 2024, 3, (SELECT id FROM "Category" WHERE name = 'Comida'), (SELECT id FROM "Month" WHERE name = 'Noviembre')),
+(150, 2024, 3, (SELECT id FROM "Category" WHERE name = 'Transporte'), (SELECT id FROM "Month" WHERE name = 'Noviembre')),
+(150, 2024, 3, (SELECT id FROM "Category" WHERE name = 'Auto nuevo'), (SELECT id FROM "Month" WHERE name = 'Noviembre')),
 
 /* December */
-(1250, 2024, 3, (SELECT id FROM "Category" WHERE name = 'Sueldo'), (SELECT id FROM "Month" WHERE name = 'December')),
-(100, 2024, 3, (SELECT id FROM "Category" WHERE name = 'Comida'), (SELECT id FROM "Month" WHERE name = 'December')),
-(150, 2024, 3, (SELECT id FROM "Category" WHERE name = 'Transporte'), (SELECT id FROM "Month" WHERE name = 'December')),
-(150, 2024, 3, (SELECT id FROM "Category" WHERE name = 'Auto nuevo'), (SELECT id FROM "Month" WHERE name = 'December'));
+(1250, 2024, 3, (SELECT id FROM "Category" WHERE name = 'Sueldo'), (SELECT id FROM "Month" WHERE name = 'Diciembre')),
+(100, 2024, 3, (SELECT id FROM "Category" WHERE name = 'Comida'), (SELECT id FROM "Month" WHERE name = 'Diciembre')),
+(150, 2024, 3, (SELECT id FROM "Category" WHERE name = 'Transporte'), (SELECT id FROM "Month" WHERE name = 'Diciembre')),
+(150, 2024, 3, (SELECT id FROM "Category" WHERE name = 'Auto nuevo'), (SELECT id FROM "Month" WHERE name = 'Diciembre'));
 
 INSERT INTO "Movement" (amount, detail, date, user_id, category_id) VALUES
 /* INGRESOS */

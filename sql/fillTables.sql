@@ -1,17 +1,17 @@
 -- Insertar datos en la tabla Month
 INSERT INTO "Month" (name) VALUES
-('January'),
-('February'),
-('March'),
-('April'),
-('May'),
-('June'),
-('July'),
-('August'),
-('September'),
-('October'),
-('November'),
-('December');
+('Enero'),
+('Febrero'),
+('Marzo'),
+('Abril'),
+('Mayo'),
+('Junio'),
+('Julio'),
+('Agosto'),
+('Septiembre'),
+('Octubre'),
+('Noviembre'),
+('Diciembre');
 
 -- Insertar datos en la tabla Type
 INSERT INTO "Type" (name) VALUES
@@ -34,9 +34,9 @@ INSERT INTO "Category" (name, type_id, user_id) VALUES
 
 -- Insertar datos en la tabla Budget
 INSERT INTO "Budget" (amount, year, user_id, category_id, month_id) VALUES
-(1000, 2024, (SELECT id FROM "User" WHERE username = 'johndoe'), (SELECT id FROM "Category" WHERE name = 'Sueldo'), (SELECT id FROM "Month" WHERE name = 'January')),
-(200, 2024, (SELECT id FROM "User" WHERE username = 'johndoe'), (SELECT id FROM "Category" WHERE name = 'Comida'), (SELECT id FROM "Month" WHERE name = 'January')),
-(150, 2024, (SELECT id FROM "User" WHERE username = 'johndoe'), (SELECT id FROM "Category" WHERE name = 'Transporte'), (SELECT id FROM "Month" WHERE name = 'January'));
+(1000, 2024, (SELECT id FROM "User" WHERE username = 'johndoe'), (SELECT id FROM "Category" WHERE name = 'Sueldo'), (SELECT id FROM "Month" WHERE name = 'Enero')),
+(200, 2024, (SELECT id FROM "User" WHERE username = 'johndoe'), (SELECT id FROM "Category" WHERE name = 'Comida'), (SELECT id FROM "Month" WHERE name = 'Enero')),
+(150, 2024, (SELECT id FROM "User" WHERE username = 'johndoe'), (SELECT id FROM "Category" WHERE name = 'Transporte'), (SELECT id FROM "Month" WHERE name = 'Enero'));
 
 -- Insertar datos en la tabla Movement
 INSERT INTO "Movement" (amount, detail, date, user_id, category_id) VALUES
