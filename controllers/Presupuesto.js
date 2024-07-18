@@ -59,7 +59,7 @@ const createBudget = async (req, res) => {
 
                 if (!existingBudget) {
                     await Budget.create({
-                        amount: 0,
+                        amount: amount,
                         year: y,
                         user_id: user_id,
                         category_id: category.id,
