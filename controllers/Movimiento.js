@@ -1,5 +1,6 @@
 const { connection, Category,Type } = require("../models/db");
 const db = require("../models/db");
+const { move } = require("../routes/routes");
 
 const Sequelize = db.Sequelize;
 const Op = db.Op;
@@ -93,11 +94,11 @@ const getMovements = async (req, res) => {
             include: [
                 {
                     model: Category,
-                    attributes: ['name'],
+                    attributes: ['id','name'],
                     include: [
                         {
                             model: Type,
-                            attributes: ['name']
+                            attributes: ['id','name']
                         }
                     ]
                 }
@@ -111,6 +112,8 @@ const getMovements = async (req, res) => {
                 id: movement.id,
                 date: movement.date,
                 type: movement.Category.Type.name,
+                typeId: movement.Category.Type.id,
+                categoryId: movement.Category.id,
                 category: movement.Category.name,
                 amount: movement.amount,
                 detail: movement.detail

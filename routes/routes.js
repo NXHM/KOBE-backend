@@ -48,6 +48,7 @@ router.delete('/deletemovimiento/:id', validarToken, eliminarMovimiento);
 router.post('/categoriesType', validarToken, getCategoriesType);
 router.get('/getMovements', validarToken, getAllMovimientos);
 router.get('/getMovement/:id',validarToken, getMovement);
+router.get('/getMovementsHistorial', validarToken, getMovements);
 
 /* Presupuestos */
 router.get('/getBudget', validarToken,getPresupuesto);
