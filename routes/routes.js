@@ -29,7 +29,7 @@ router.post('/changeEmail', changeEmail);
 
 //Tipo
 router.get('/tipo', getTipo);
-router.get('/categoria', getCategoria);
+router.post('/categoria', validarToken, getCategoria);
 router.post('/createCategoria', validarToken, createCategoria)
 router.put('/updatecategoria/:id', validarToken,updateCategoria);
 router.delete('/deletecategoria/:id', validarToken, deleteCategoria);
@@ -37,7 +37,7 @@ router.get('/categoriasTipo', validarToken, getCategoriaConTipos);
 router.get('/getCategoriaporId/:category_id', validarToken, getCategoriaById);
 
 //Movimientos
-router.post('/ingresarMovimiento', ingresarMovimiento);
+router.post('/ingresarMovimiento', validarToken, ingresarMovimiento);
 router.post('/movimientos', validarToken, getMovimientos);
 router.post('/movimientos2', validarToken, getMovements);
 router.post('/movimientos/sumaCategorias', validarToken, getMontoPorCategoriaMovimiento);

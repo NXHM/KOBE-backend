@@ -6,9 +6,10 @@ const Op = db.Op;
 const Movement = db.Movement;
 
 const ingresarMovimiento = async (req, res) => {
-    const { amount, detail, date, user_id, category_id } =
+    const { amount, detail, date, category_id } =
         req.body;
-    console.log(req.body.values)
+    const user_id = req.id;
+
     const query = `
       INSERT INTO "Movement" (amount, detail, date, user_id, category_id)
       VALUES ($1, $2, $3, $4, $5)

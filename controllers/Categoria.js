@@ -3,7 +3,7 @@ const { Op } = require('sequelize');
 const db = require("../models/db");
 
 const getCategoria = async (req, res) => {
-    const { user_id } = req.body;
+    const user_id = req.id;
 
     try {
         const categorias = await Category.findAll({
@@ -25,7 +25,7 @@ const getCategoria = async (req, res) => {
                 acc[type].push(categoria);
                 return acc;
             }, {});
-
+            console.log(groupedByType);
             res.status(200).json(groupedByType);
         } else {
             res.status(404).json({ message: "No existen categorías." });
