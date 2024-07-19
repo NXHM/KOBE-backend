@@ -5,9 +5,8 @@ const router = express.Router();
 const { getTipo  } = require('../controllers/Tipo');
 const { getCategoria,updateCategoria,deleteCategoria, createCategoria, getCategoriaConTipos, getCategoriaById  } = require('../controllers/Categoria');
 const { ingresarMovimiento, getMovimientos, getMontoPorCategoriaMovimiento, getMontoPorTipoMovimiento, getMovements  } = require('../controllers/Movimiento');
-const { createUser, loginUser, loginUserWithCookies, logoutUser, getUserData } = require('../controllers/userController');
-const { changePassword,validateVerificationCode, sendVerificationCode} = require('../controllers/userController');
-const { changeEmail, changePasswd } = require('../controllers/userController');
+const { createUser, loginUser, changePassword, validateVerificationCode, sendVerificationCode} = require('../controllers/userController');
+const { getUser, putUser, putEmail, putPassword, logoutUser } = require('../controllers/userController');
 const { editarMovimiento, eliminarMovimiento } = require('../controllers/Movimiento');
 const { getPresupuesto, getPresupuestoAgrupadoPorTipo,getPresupuestoPorCategoria, getPresupuestoPorTipo, createBudget, updateBudget} = require('../controllers/Presupuesto');
 const { validarToken } = require('../config/Middleware');
@@ -18,14 +17,14 @@ const { getMovimientosYPresupuestosPorCategoria } = require('../controllers/Movi
 // User
 router.post('/createUser', createUser);
 router.post('/loginUser', loginUser);
-router.post('/loginUserWithCookies', loginUserWithCookies);
-router.get('/logoutUser', logoutUser);
-router.get('/getUserData', validarToken, getUserData);
 router.post('/requestVerification', sendVerificationCode);
 router.post('/validateCode', validateVerificationCode);
 router.post('/changePassword', changePassword);
-router.post('/changePasswd', changePasswd);
-router.post('/changeEmail', changeEmail);
+router.get('/getUser', validarToken, getUser);
+router.put('/putUser', validarToken, putUser);
+router.put('/putEmail', validarToken, putEmail);
+router.put('/putPassword', validarToken, putPassword);
+router.get('/logoutUser', validarToken, logoutUser);
 
 //Tipo
 router.get('/tipo', getTipo);
