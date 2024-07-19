@@ -240,11 +240,11 @@ const getMontoPorTipoMovimiento = async (req, res) => {
 
 const editarMovimiento = async (req, res) => {
     const { id } = req.params;
-    const { date, category_id, amount, detail } = req.body;
+    const { date, amount, detail } = req.body;
 
     const query = `
     UPDATE "Movement"
-    SET date = $1, category_id = $2, amount = $3, detail = $4
+    SET date = $1, amount = $3, detail = $4
     WHERE id = $5
     RETURNING *;
   `;
