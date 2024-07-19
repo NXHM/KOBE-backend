@@ -7,7 +7,7 @@ const { getCategoria,updateCategoria,deleteCategoria, createCategoria, getCatego
 const { ingresarMovimiento, getMovimientos, getMontoPorCategoriaMovimiento, getMontoPorTipoMovimiento, getMovements, getCategoriesType, getAllMovimientos  } = require('../controllers/Movimiento');
 const { createUser, loginUser, changePassword, validateVerificationCode, sendVerificationCode} = require('../controllers/userController');
 const { getUser, putUser, putEmail, putPassword, logoutUser } = require('../controllers/userController');
-const { editarMovimiento, eliminarMovimiento } = require('../controllers/Movimiento');
+const { editarMovimiento, eliminarMovimiento, getMovement } = require('../controllers/Movimiento');
 const { getPresupuesto, getPresupuestoAgrupadoPorTipo,getPresupuestoPorCategoria, getPresupuestoPorTipo, createBudget, updateBudget} = require('../controllers/Presupuesto');
 const { validarToken } = require('../config/Middleware');
 const { getDiasXMes, getAllMonths } = require('../controllers/Mes');
@@ -47,6 +47,7 @@ router.put('/editmovimiento/:id', validarToken, editarMovimiento);
 router.delete('/deletemovimiento/:id', validarToken, eliminarMovimiento);
 router.post('/categoriesType', validarToken, getCategoriesType);
 router.get('/getMovements', validarToken, getAllMovimientos);
+router.get('/getMovement/:id',validarToken, getMovement);
 
 /* Presupuestos */
 router.get('/getBudget', validarToken,getPresupuesto);

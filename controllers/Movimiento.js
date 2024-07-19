@@ -35,6 +35,51 @@ const ingresarMovimiento = async (req, res) => {
     }
 };
 
+const getMovement = async (req, res) => {
+    const { id } = req.params;
+
+    try {
+        const movement = await Movement.findOne({
+            where: {
+                id: id,
+            },
+            attributes: ['id', 'amount', 'detail', 'date'],
+            include: [
+                {
+                    model: Category,
+                    attributes: ['id', 'name'],
+                    include: [
+                        {
+                            model: Type,
+                            attributes: ['id', 'name'],
+                        },
+                    ],
+                },
+            ],
+        });
+
+        if (!movement) {
+            return res.status(404).json({ message: "Movimiento no encontrado." });
+        }
+
+        const result = {
+            id: movement.id,
+            amount: movement.amount,
+            detail: movement.detail,
+            date: movement.date,
+            category_id: movement.Category.id,
+            category_name: movement.Category.name,
+            type_id: movement.Category.Type.id,
+            type_name: movement.Category.Type.name,
+        };
+
+        res.status(200).json(result);
+    } catch (error) {
+        console.error('Error al obtener movimiento:', error);
+        res.status(500).json({ error: 'Error al obtener movimiento.' });
+    }
+};
+
 const getMovements = async (req, res) => {
     const user_id = req.id; // Extraer user_id del middleware
 
@@ -334,6 +379,7 @@ module.exports = {
     ingresarMovimiento,
     getMovimientos,
     getMovements,
+    getMovement,
     getMontoPorCategoriaMovimiento,
     getMontoPorTipoMovimiento,
     editarMovimiento,
