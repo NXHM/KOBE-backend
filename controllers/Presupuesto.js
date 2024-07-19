@@ -29,7 +29,7 @@ const createBudget = async (req, res) => {
             });
         }
 
-        // Crear el presupuesto asociado a la categoría
+        // Crear el presupuesto asociado a la categoría para el mes y año especificado
         const newBudget = await Budget.create({
             amount,
             year,
@@ -37,6 +37,45 @@ const createBudget = async (req, res) => {
             category_id: category.id,
             month_id
         });
+
+        // Crear presupuestos adicionales con monto 0 para los años 2024 a 2026
+        const startYear = 2024;
+        const endYear = 2026;
+
+        for (let y = year; y <= year+2; y++) {
+            for (let m = 1; m <= 12; m++) {
+                // Saltar el presupuesto ya creado con el monto especificado
+                if (y === year && m === month_id) continue;
+
+                // Verificar si ya existe un presupuesto para esa combinación de year y month_id
+                const existingBudget = await Budget.findOne({
+                    where: {
+                        year: y,
+                        month_id: m,
+                        user_id: user_id,
+                        category_id: category.id
+                    }
+                });
+
+                if (y === year && m <= month_id) {
+                    await Budget.create({
+                        amount: 0,
+                        year: y,
+                        user_id: user_id,
+                        category_id: category.id,
+                        month_id: m
+                    });
+                } else if (!existingBudget) {
+                    await Budget.create({
+                        amount: amount,
+                        year: y,
+                        user_id: user_id,
+                        category_id: category.id,
+                        month_id: m
+                    });
+                }
+            }
+        }
 
         return res.status(201).json({
             message: "Budget created successfully",
@@ -51,18 +90,18 @@ const createBudget = async (req, res) => {
 
 
 
+
 const getPresupuesto = async (req, res) => {
-    const { month_id, user_id } = req.body;
+    const { category_id, month_id, year } = req.query;
+    const user_id = req.id; // Obtener el user_id desde req.id
 
     try {
-        let budgets = await Budget.findAll({
+        let budget = await Budget.findOne({
             where: {
-                month_id: {
-                    [Op.eq]: month_id,
-                },
-                user_id: {
-                    [Op.eq]: user_id,
-                },
+                category_id: category_id,
+                month_id: month_id,
+                year: year,
+                user_id: user_id,
             },
             include: [
                 {
@@ -72,19 +111,19 @@ const getPresupuesto = async (req, res) => {
             ],
         });
 
-        if (budgets.length > 0) {
-            res.send(budgets);
+        if (budget) {
+            res.send(budget);
         } else {
-            res.status(404).json({ message: "No existe presupuesto para el mes ingresado." });
+            res.status(404).json({ message: "No existe presupuesto para los parámetros ingresados." });
         }
     } catch (error) {
-        console.error("Error al buscar presupuestos: ", error);
-        res.status(500).json({ error: "Error al buscar presupuestos." });
+        console.error("Error al buscar presupuesto: ", error);
+        res.status(500).json({ error: "Error al buscar presupuesto." });
     }
 };
 
 const getPresupuestoAgrupadoPorTipo = async (req, res) => {
-    const { month_id } = req.body;
+    const { month_id, year } = req.query; // Obtener los parámetros de consulta
     const user_id = req.id;
 
     try {
@@ -96,6 +135,9 @@ const getPresupuestoAgrupadoPorTipo = async (req, res) => {
                 month_id: {
                     [Op.eq]: month_id
                 },
+                year: {
+                    [Op.eq]: year
+                }
             },
             include: [
                 {
@@ -137,13 +179,14 @@ const getPresupuestoAgrupadoPorTipo = async (req, res) => {
 
             res.send(response);
         } else {
-            res.status(404).json({ message: "No existen presupuestos para el mes ingresado." });
+            res.status(404).json({ message: "No existen presupuestos para el mes y año ingresado." });
         }
     } catch (error) {
         console.error("Error al buscar presupuestos agrupados por tipo: ", error);
         res.status(500).json({ error: "Error al buscar presupuestos agrupados por tipo." });
     }
 };
+
 
 const getPresupuestoPorCategoria = async (req, res) => {
     const { user_id, month_id } = req.body;
@@ -238,31 +281,33 @@ const getPresupuestoPorTipo = async (req, res) => {
 
 
 const updateBudget = async (req, res) => {
-    const { id } = req.params;
-    const { amount, year, user_id, category_id, month_id } = req.body;
+    const { id, amount } = req.body;
+    const user_id = req.id; // Obtener el user_id desde req.id
+
+    if (!id || amount === undefined) {
+        return res.status(400).json({ error: "Parámetros incompletos." });
+    }
 
     try {
-        const budget = await Budget.findByPk(id);
+        const [updated] = await Budget.update(
+            { amount },
+            {
+                where: {
+                    id: id,
+                    user_id: user_id,
+                },
+            }
+        );
 
-        if (!budget) {
-            return res.status(404).json({ error: 'Budget not found' });
+        if (updated) {
+            const updatedBudget = await Budget.findOne({ where: { id: id } });
+            res.status(200).json(updatedBudget);
+        } else {
+            res.status(404).json({ error: "Presupuesto no encontrado." });
         }
-
-        budget.amount = amount;
-        budget.year = year;
-        budget.user_id = user_id;
-        budget.category_id = category_id;
-        budget.month_id = month_id;
-
-        await budget.save();
-
-        return res.status(200).json({
-            message: "Budget updated successfully",
-            budget: budget
-        });
     } catch (error) {
-        console.error('Error updating budget:', error);
-        return res.status(500).json({ error: 'Error updating budget' });
+        console.error("Error al actualizar el presupuesto: ", error);
+        res.status(500).json({ error: "Error al actualizar el presupuesto." });
     }
 };
 

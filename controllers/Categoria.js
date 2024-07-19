@@ -3,7 +3,7 @@ const { Op } = require('sequelize');
 const db = require("../models/db");
 
 const getCategoria = async (req, res) => {
-    const { user_id } = req.id;
+    const user_id = req.id;
 
     try {
         const categorias = await Category.findAll({
@@ -25,7 +25,7 @@ const getCategoria = async (req, res) => {
                 acc[type].push(categoria);
                 return acc;
             }, {});
-
+            console.log(groupedByType);
             res.status(200).json(groupedByType);
         } else {
             res.status(404).json({ message: "No existen categorías." });
@@ -36,28 +36,99 @@ const getCategoria = async (req, res) => {
     }
 };
 
-const createCategoria = async (req, res) => {
-    const { name, type_id } = req.body;
+const getCategoriaById = async (req, res) => {
+    const { category_id } = req.params;
     const user_id = req.id;
+
+    try {
+        const category = await Category.findOne({
+            where: {
+                id: category_id,
+                user_id: user_id
+            },
+            include: [{
+                model: Type,
+                attributes: ['id', 'name']
+            }]
+        });
+
+        if (!category) {
+            return res.status(404).json({ message: 'Categoría no encontrada' });
+        }
+
+        res.status(200).json({
+            id: category.id,
+            name: category.name,
+            type_id: category.type_id,
+            type_name: category.Type.name
+        });
+    } catch (error) {
+        console.error('Error al obtener la categoría:', error);
+        res.status(500).json({ error: 'Error al obtener la categoría' });
+    }
+};
+
+const getCategoriaConTipos = async (req, res) => {
+    const user_id = req.id;
+    try {
+  
+      const types = await Type.findAll({
+        include: [
+          {
+            model: Category,
+            where: {
+              user_id: user_id
+            }
+          }
+        ]
+      });
+  
+      res.json(types);
+    } catch (error) {
+      console.error('Error:', error);
+      res.status(500).json({ error: 'Internal server error' });
+    }
+  };
+
+const createCategoria = async (req, res) => {
+    const { name, type_id, user_id } = req.body;
 
     try {
         // Crear la categoría
         const newCategory = await Category.create({
             name,
             type_id,
-            user_id
+            user_id // Incluir user_id al crear la categoría
         });
 
+        // Obtener todos los meses
+        const months = await Month.findAll();
+
+        // Crear registros en Budget para cada mes hasta 2026
+        const budgets = [];
+        for (let year = new Date().getFullYear(); year <= 2026; year++) {
+            for (let month of months) {
+                budgets.push({
+                    amount: 0,
+                    year: year,
+                    category_id: newCategory.id, // Correctamente usar newCategory.id
+                    month_id: month.id, // Correctamente usar month.id
+                    user_id: user_id // Correctamente usar user_id de los params
+                });
+            }
+        }
+
+        await Budget.bulkCreate(budgets);
+
         return res.status(201).json({
-            message: "Category created successfully",
+            message: "Category and associated budgets created successfully",
             category: newCategory
         });
     } catch (error) {
-        console.error('Error creating category:', error);
-        return res.status(500).json({ error: 'Error creating category' });
+        console.error('Error creating category and budgets:', error);
+        return res.status(500).json({ error: 'Error creating category and budgets' });
     }
 };
-
 
 
 const updateCategoria = async (req, res) => {
@@ -126,5 +197,7 @@ module.exports = {
     getCategoria,
     createCategoria,
     updateCategoria,
-    deleteCategoria
+    deleteCategoria,
+    getCategoriaConTipos,
+    getCategoriaById
 };

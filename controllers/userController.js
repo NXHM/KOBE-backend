@@ -1,5 +1,4 @@
 const db = require("../models/db");
-const cookieParser = require('cookie-parser');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
 const nodemailer = require('nodemailer');
@@ -180,55 +179,8 @@ const changePassword = async (req, res) => {
   }
 };
 
-// Iniciar sesión
-const loginUserWithCookies = async (req, res) => {
-  try {
-    const { username, password } = req.body;
-  
-    const user = await User.findOne({ where: { username } });
-    if (!user)
-      return res.status(404).json({ message: "Usuario no encontrado." });
-  
-    const isMatch = await bcrypt.compare(password, user.password);
-    if (!isMatch)
-      return res.status(404).json({ message: "Contraseña incorrecta." });
-    
-    const token = jwt.sign(
-      {
-        id: user.id,
-        username: user.username
-      },
-      'SuperSecretPassword',
-      { expiresIn: "1h" }
-    );
-
-    return res
-      .cookie('access_token', token, 
-        {
-          httpOnly: true,
-          secure: true,
-          sameSite: 'strict',
-          maxAge: 1000 * 60 * 60
-        }
-      )
-      .status(200).json({ message: "Inicio de sesión exitoso." });
-  } catch (error) {
-    return res.status(500).json({
-      message: "Error al buscar al usuario.",
-      error: error.message,
-    });
-  }
-};
-
-// Cerrar sesión
-const logoutUser = (req, res) => {
-  res
-    .clearCookie('access_token')
-    .status(200).json({ message: "Cierre de sesión exitoso." });
-};
-
 // Conseguir información de perfil
-const getUserData = async (req, res) => {
+const getUser = async (req, res) => {
   try {
     const id = req.id;
     
@@ -246,39 +198,70 @@ const getUserData = async (req, res) => {
   }
 };
 
-// Cambio de correo
-const changeEmail = async (req, res) => {
-  const { userId, newEmail } = req.body
+const putUser = async(req, res) => {
+  try {
+    const id = req.id;
+    const { name, username } = req.body;
+    
+    await User.update(
+      { name, username },
+      { where: { id } }
+    );
 
-  await User.update(
-    { email: newEmail },
-    { where: { id: userId } }
-  );
+    res.status(200).json({ message: "Cambios realizados de manera exitosa." });
+  } catch (error) {
+    return res.status(404).json({ message: `Ocurrió un error: ${error}` });
+  }
+}
 
-  res.send('Email changed succesfully!');
-};
+const putEmail = async(req, res) => {
+  try {
+    const id = req.id;
+    const { email } = req.body;
+    
+    await User.update(
+      { email },
+      { where: { id } }
+    );
 
-// Cambio de contraseña
-const changePasswd = async (req, res) => {
-  const { userId, newPassword } = req.body
+    res.status(200).json({ message: "Cambios realizados de manera exitosa." });
+  } catch (error) {
+    return res.status(404).json({ message: `Ocurrió un error: ${error}` });
+  }
+}
 
-  await User.update(
-    { password: newPassword },
-    { where: { id: userId } }
-  );
+const putPassword = async(req, res) => {
+  try {
+    const id = req.id;
+    const { password } = req.body;
+    
+    await User.update(
+      { password },
+      { where: { id } }
+    );
 
-  res.send('Password changed succesfully!');
+    res.status(200).json({ message: "Cambios realizados de manera exitosa." });
+  } catch (error) {
+    return res.status(404).json({ message: `Ocurrió un error: ${error}` });
+  }
+}
+
+// Cerrar sesión
+const logoutUser = (req, res) => {
+  res
+    .clearCookie('access_token')
+    .status(200).json({ message: "Cierre de sesión exitoso." });
 };
 
 module.exports = {
   createUser,
   loginUser,
-  loginUserWithCookies,
-  logoutUser,
-  getUserData,
   changePassword,
-  changeEmail,
-  changePasswd,
   sendVerificationCode,
-  validateVerificationCode
+  validateVerificationCode,
+  getUser,
+  putUser,
+  putEmail,
+  putPassword,
+  logoutUser,
 }
