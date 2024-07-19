@@ -42,7 +42,7 @@ const createBudget = async (req, res) => {
         const startYear = 2024;
         const endYear = 2026;
 
-        for (let y = year; y <= year+2; y++) {
+        for (let y = startYear; y <= endYear; y++) {
             for (let m = 1; m <= 12; m++) {
                 // Saltar el presupuesto ya creado con el monto especificado
                 if (y === year && m === month_id) continue;
@@ -57,7 +57,7 @@ const createBudget = async (req, res) => {
                     }
                 });
 
-                if (y === year && m <= month_id) {
+                if (y < year || (m < month_id && y===year)) {
                     await Budget.create({
                         amount: 0,
                         year: y,
