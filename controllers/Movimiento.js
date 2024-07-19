@@ -256,30 +256,82 @@ const eliminarMovimiento = async (req, res) => {
     }
 };
 
-const getCategoriasbyTipo = async (req, res) => {
-    const { id } = req.params;
+// const getCategoriasbyTipo = async (req, res) => {
+//     const { id } = req.params;
 
-    const query =`
-    SELECT * FROM "Category"
-    WHERE type_id = $1;
-    `;
+//     const query =`
+//     SELECT * FROM "Category"
+//     WHERE type_id = $1;
+//     `;
 
-  const values = [id];
+//   const values = [id];
+
+//     try {
+//         const { rows } = await connection.query(query, values);
+//         if (rows.length === 0) {
+//             return res.status(404).json({ error: "No se encontraron categorías para el tipo proporcionado" });
+//         }
+//         res.status(200).json(rows);
+//     } catch (error) {
+//         console.error("Error al obtener categorías:", error);
+//         res.status(500).json({
+//             error: "Hubo un problema al obtener las categorías",
+//         });
+//     }
+
+// }
+
+// Endpoint para obtener todos los types y sus categorías filtradas por user_id
+const getCategoriesType = async (req, res) => {
+    const user_id = req.id;
+    const type_id = req.body.type_id;
+  
+    try {
+      const types = await Category.findAll({
+        where: { user_id: user_id },
+        include: [
+          {
+            model: Type,
+            where: { id: type_id },
+            attributes: []
+            //required: false // Para que devuelva tipos aunque no tengan categorías asociadas
+          }
+        ]
+      });
+  
+      res.json(types);
+    } catch (err) {
+      console.error(err);
+      res.status(500).json({ error: 'Error al obtener tipos y categorías' });
+    }
+  }
+
+  const getAllMovimientos = async (req, res) => {
+    const user_id = req.id;
 
     try {
-        const { rows } = await connection.query(query, values);
-        if (rows.length === 0) {
-            return res.status(404).json({ error: "No se encontraron categorías para el tipo proporcionado" });
-        }
-        res.status(200).json(rows);
-    } catch (error) {
-        console.error("Error al obtener categorías:", error);
-        res.status(500).json({
-            error: "Hubo un problema al obtener las categorías",
+        const movements = await Movement.findAll({
+            where: {
+                user_id : user_id
+            },
+            include: [
+                {
+                    model: Category,
+                    include: [
+                    {
+                        model: Type
+                    }
+                    ]
+                }
+            ]
         });
-    }
 
-}
+        res.json(movements);
+    }catch(error){
+        console.error(error);
+        res.status(500).json({ error: 'Error al obtener movimientos' });
+    }
+  }
 
 module.exports = {
     ingresarMovimiento,
@@ -289,5 +341,6 @@ module.exports = {
     getMontoPorTipoMovimiento,
     editarMovimiento,
     eliminarMovimiento,
-    getCategoriasbyTipo
+    getCategoriesType,
+    getAllMovimientos
 };
