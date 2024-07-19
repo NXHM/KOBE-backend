@@ -244,12 +244,12 @@ const editarMovimiento = async (req, res) => {
 
     const query = `
     UPDATE "Movement"
-    SET date = $1, amount = $3, detail = $4
-    WHERE id = $5
+    SET date = $1, amount = $2, detail = $3
+    WHERE id = $4
     RETURNING *;
   `;
 
-    const values = [date, category_id, amount, detail, id];
+    const values = [date, amount, detail, id];
 
     try {
         const { rows } = await connection.query(query, values);
