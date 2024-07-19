@@ -235,8 +235,10 @@ const putPassword = async(req, res) => {
     const id = req.id;
     const { password } = req.body;
     
+    const hashedPassword = await bcrypt.hash(password, 10);
+
     await User.update(
-      { password },
+      { password: hashedPassword },
       { where: { id } }
     );
 
