@@ -57,7 +57,15 @@ const createBudget = async (req, res) => {
                     }
                 });
 
-                if (!existingBudget) {
+                if (y === year && m <= month_id) {
+                    await Budget.create({
+                        amount: 0,
+                        year: y,
+                        user_id: user_id,
+                        category_id: category.id,
+                        month_id: m
+                    });
+                } else if (!existingBudget) {
                     await Budget.create({
                         amount: amount,
                         year: y,
